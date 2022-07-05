@@ -11,6 +11,6 @@ public interface PostDao extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p ORDER BY p.id DESC")
     List<Post> findAllDesc();
 
-    @Query("SELECT p FROM Post p WHERE p.title LIKE %:keyword% OR p.body LIKE %:keyword%")
-    List<Post> findAllSearch(String keyword);
+    @Query("SELECT p FROM Post p WHERE p.title LIKE %:word% OR p.body LIKE %:word%")
+    List<Post> findAllSearch(String word);
 }

@@ -3,6 +3,7 @@ package com.soldoc.tech.domain.post;
 
 import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
+import com.soldoc.tech.domain.post.web.dto.PostListResponseDto;
 import com.soldoc.tech.domain.post.web.dto.PostSaveRequestDto;
 import com.soldoc.tech.domain.post.web.dto.PostUpdateRequestDto;
 import org.junit.After;
@@ -12,13 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,14 +48,41 @@ public class PostControllerTest {
     }
 
 
+    //'진료' 키워드로 검색 테스트
+    @Test
+    public void Post_검색된다() throws Exception {
+        //given
+        String expectedTitle = "원격진료솔닥";
+        String searchWord = "진료";
+        List<Post> postedData;
+        postDao.save(Post.builder().title(expectedTitle).body("치료").author("철수").build());
+        postDao.save(Post.builder().title("원격솔닥").body("회복").author("영희").build());
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("word", "진료");
+        final String BASE_URL = "http://localhost:" + 9000 + "/api/contents/search";
+
+        //when
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(BASE_URL + "/{word}", String.class, params);
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        System.out.println(">>>> " + responseEntity.getBody());
+
+        List<Post> searchData = postDao.findAll();
+        System.out.println(searchData);
+        assertThat(searchData.get(0).getTitle()).isEqualTo(expectedTitle);
+
+    }
+
+    //BDDMockito 패턴 given, when, then
     @Test
     public void Post_등록된다() throws Exception {
         //given
         String title = "테스트 게시물 제목";
         String body = "테스트 게시물 내용";
         String author = "테스트 게시물 작성자";
-        int viewCount = 100;
-        short likeCount = 5;
+
 
         //기본적으로 DTO에 내용을 담아서 테스트.
         PostSaveRequestDto requestDto = PostSaveRequestDto.builder()
@@ -58,7 +91,7 @@ public class PostControllerTest {
                 .author(author)
                 .build();
 
-        String url = "http://localhost:" + port + "/contents";
+        String url = "http://localhost:" + port + "/api/contents";
 
         //해당 url로 데이터 전송 (ResponseEntity 형태로)
         //when
@@ -90,7 +123,7 @@ public class PostControllerTest {
                 .body(expectedBody)
                 .build();
 
-        String url = "http://localhost:" + port + "/contents/" + updatedId;
+        String url = "http://localhost:" + port + "/api/contents/" + updatedId;
 
         HttpEntity<PostUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 

@@ -30,7 +30,10 @@ public class PostDaoTest {
         postDao.deleteAll();
     }
 
-    //TODO 게시글 저장 테스트 케이스
+
+
+
+
 
     @Test
     public void 게시물저장_불러오기() {

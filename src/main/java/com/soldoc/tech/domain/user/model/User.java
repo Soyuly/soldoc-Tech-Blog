@@ -1,10 +1,13 @@
 package com.soldoc.tech.domain.user.model;
 
+import com.soldoc.tech.domain.like.model.Like;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -22,6 +25,10 @@ public class User {
 
     @Column(nullable = false)
     private String picture;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    Set<Like> likes = new HashSet<>();
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

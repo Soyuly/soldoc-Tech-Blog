@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.keyword.model;
 
+import com.soldoc.tech.domain.like.model.Like;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import com.soldoc.tech.domain.theme.model.Theme;
 import lombok.Getter;
@@ -7,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -26,7 +29,6 @@ public class Keyword {
     // Post에 대한 외래키(N : M)
     @OneToMany(mappedBy = "keyword")
     private List<PostKeyword> postKeywords = new ArrayList<>();
-
 
 
     // 키워드이름

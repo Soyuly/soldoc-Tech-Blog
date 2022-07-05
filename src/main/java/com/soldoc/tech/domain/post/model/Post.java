@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.post.model;
 
+import com.soldoc.tech.domain.like.model.Like;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -22,10 +25,6 @@ public class Post extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // N : M 외래키
-    // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
-    @OneToMany(mappedBy = "post")
-    private List<PostKeyword> postKeywords = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;
@@ -45,6 +44,15 @@ public class Post extends BaseTime {
     @Column(name="LIKE_COUNT", columnDefinition = "TINYINT DEFAULT 0")
     private short likeCount;
 
+    // N : M 외래키
+    // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
+    @OneToMany(mappedBy = "post")
+    private List<PostKeyword> postKeywords = new ArrayList<>();
+
+    // Like에 대한 외래키(N : 1)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    Set<Like> likes = new HashSet<>();
+
     @Builder
     public Post(
             String title,
@@ -59,6 +67,8 @@ public class Post extends BaseTime {
         this.viewCount = viewCount;
         this.likeCount = likeCount;
     }
+
+
 
     public void update(String title, String body){
         this.title = title;

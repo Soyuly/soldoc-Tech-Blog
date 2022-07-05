@@ -12,14 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//postsRepository결과의 값(Post의 Stream)을 map을 통해 PostListResponseDto로 변환->List로 반환하는 메소드
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostDao postDao;
-    //postsRepository결과의 값(Post의 Stream)을 map을 통해 PostListResponseDto로 변환->List로 반환하는 메소드
+
     @Transactional
     public List<PostListResponseDto> findAllContent() {
         return postDao.findAllDesc().stream()
@@ -29,8 +31,8 @@ public class PostService {
 
 
     @Transactional
-    public List<PostListResponseDto> search(@RequestParam(value="search") String search) {
-        return postDao.findAllSearch(search).stream()
+    public List<PostListResponseDto> search(@RequestParam(value="word") String word) {
+        return postDao.findAllSearch(word).stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }
