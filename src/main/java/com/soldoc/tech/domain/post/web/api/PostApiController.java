@@ -26,8 +26,8 @@ public class PostApiController {
     }
 
     @GetMapping("/contents/search")
-    public List<PostListResponseDto> search(@RequestParam(value="keyword") String keyword){
-        return postService.search(keyword);
+    public List<PostListResponseDto> search(@RequestParam(value="search") String search){
+        return postService.search(search);
     }
 
     //객체를 저장
