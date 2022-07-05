@@ -29,8 +29,8 @@ public class PostService {
 
 
     @Transactional
-    public List<PostListResponseDto> search(@RequestParam(value="keyword") String keyword) {
-        return postDao.findAllSearch(keyword).stream()
+    public List<PostListResponseDto> search(@RequestParam(value="search") String search) {
+        return postDao.findAllSearch(search).stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }
