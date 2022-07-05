@@ -1,6 +1,7 @@
 package com.soldoc.tech.domain.post.model;
 
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,7 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Post {
+public class Post extends BaseTime {
 
     // 기본키(post_id)
     @Id
@@ -44,23 +45,24 @@ public class Post {
     @Column(name="LIKE_COUNT", columnDefinition = "TINYINT DEFAULT 0")
     private short likeCount;
 
-    // 작성 날짜를 자동으로 생성해주는 어노테이션
-    @CreatedDate
-    @Column(name="CREATE_DATE", updatable = false, nullable = false)
-    private LocalDateTime createDate;
+    @Builder
+    public Post(
+            String title,
+            String body,
+            String author,
+            int viewCount,
+            short likeCount
+    ){
+        this.title = title;
+        this.body = body;
+        this.author = author;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+    }
 
-    // 최근 수정 날짜를 자동으로 반영해준다.
-    @LastModifiedDate
-    @Column(name="UPDATE_DATA", nullable = false)
-    private LocalDateTime updateDate;
-
-
-
-
-
-
-
-
-
+    public void update(String title, String body){
+        this.title = title;
+        this.body = body;
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.banner.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,4 +17,9 @@ public class Banner {
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String url;
+
+    @Builder
+    public Banner(String url){
+        this.url = url;
+    }
 }
