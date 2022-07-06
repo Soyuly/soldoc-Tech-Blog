@@ -22,6 +22,9 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
+/*
+* 인증된 사용자의 세부정보를 확인하는 클래스
+* */
 public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
     private final String userId;
     private final String password;

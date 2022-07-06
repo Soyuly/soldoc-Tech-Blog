@@ -35,6 +35,7 @@ public class AuthTokenProvider {
     }
 
     public AuthToken convertAuthToken(String token) {
+
         return new AuthToken(token, key);
     }
 

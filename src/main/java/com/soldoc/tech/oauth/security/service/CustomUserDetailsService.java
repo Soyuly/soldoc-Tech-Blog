@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+/*
+DB에서 유저정보를 가져오는 클래스
+*/
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;

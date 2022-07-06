@@ -32,6 +32,8 @@ import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
+// 웹 보안 기능 초기화 및 설정이 가능핟록 해주는 클래스
+// 여기
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CorsProperties corsProperties;
@@ -42,9 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenAccessDeniedHandler tokenAccessDeniedHandler;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
 
-    /*
-     * UserDetailsService 설정
-     * */
+    // UserDatail 설정
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
@@ -54,45 +54,61 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
+                .cors()// CORS 설정
                 .and()
+                //Session 비활성화
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                //폼 비활성화(REST API라 사실 필요없을 것 같음)
                 .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
+
+                // 예외처리 기능
                 .exceptionHandling()
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                .accessDeniedHandler(tokenAccessDeniedHandler)
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint()) // 인가되지 않은 사용자가 보안된 리소스 접근시 에러 예외처리
+                .accessDeniedHandler(tokenAccessDeniedHandler) //권한이 부족할 때 나타나는 에러 예외처리
                 .and()
+
+                // 각 URL별 요청을 나눈다.
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/api/**").hasAnyAuthority(RoleType.USER.getCode())
-                .antMatchers("/api/**/admin/**").hasAnyAuthority(RoleType.ADMIN.getCode())
-                .anyRequest().authenticated()
+                .antMatchers("/api/authtest/**").hasAnyAuthority(RoleType.USER.getCode())
+                .antMatchers("/api/authtest/admin/**").hasAnyAuthority(RoleType.ADMIN.getCode())
+                .anyRequest().permitAll()
                 .and()
+
+                //로그인 했을 때 액션
                 .oauth2Login()
+
+                //인가에 대한 요청의 서비스 -> 여기에서 적은 url 접속시 oauth로그인 요청
+                // http://locahost:9000/oauth2/authrorization으로 접속해야함.
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorization")
+
+                // 인가 요청을 시작한 지점부 인가 요청 받는 시점까지 쿠키에서 인가 권한을 유지해준다.
                 .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository())
                 .and()
-                .redirectionEndpoint()
-                .baseUri("/*/oauth2/code/*")
-                .and()
-                .userInfoEndpoint()
-                .userService(oAuth2UserService)
-                .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler())
-                .failureHandler(oAuth2AuthenticationFailureHandler());
 
+                //authoization 응답이 처리될 URI
+                .redirectionEndpoint()
+                .baseUri("oauth2/redirect/*")
+                .and()
+
+                // 로그인 성공 이의 설정을 시작
+                .userInfoEndpoint()
+                .userService(oAuth2UserService) //CustomOAuthUserService에서 시작하겠다.
+                .and()
+                .successHandler(oAuth2AuthenticationSuccessHandler()) //로그인 성공했을 때 handler
+                .failureHandler(oAuth2AuthenticationFailureHandler()); // 실패
+
+        // 토큰을 인증하는 필터
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    /*
-     * auth 매니저 설정
-     * */
-    @Override
+    // 인증에 관한 주요 전략 인터페이스
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
@@ -144,9 +160,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new OAuth2AuthenticationFailureHandler(httpCookieOAuth2AuthorizationRequestRepository());
     }
 
-    /*
-     * Cors 설정
-     * */
+    // Cors 설정
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource corsConfigSource = new UrlBasedCorsConfigurationSource();

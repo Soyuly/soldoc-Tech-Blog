@@ -16,6 +16,10 @@ import java.io.IOException;
 
 import static com.soldoc.tech.oauth.security.repository.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
+/*
+*
+* OAuth
+* */
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
@@ -36,6 +40,7 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
         httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
+        // 쿼리 문자열에 추가된 오류내용을 클라이언트측에 보낸다.
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

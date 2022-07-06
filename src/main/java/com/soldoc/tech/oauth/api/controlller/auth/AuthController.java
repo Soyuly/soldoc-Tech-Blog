@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/authtest")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -38,11 +38,15 @@ public class AuthController {
     private final static String REFRESH_TOKEN = "refresh_token";
 
     @PostMapping("/login")
+
+    // httpservlet Reuest를 사용하면 값을 받아올 수 있다.
     public ApiResponse login(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestBody AuthReqModel authReqModel
     ) {
+
+        // 토큰을 생성하여 인증을 시도한다.
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authReqModel.getId(),
@@ -50,10 +54,15 @@ public class AuthController {
                 )
         );
 
+        // 내가 생성한 AuthReqModel에서 아이디를 가져온다.
         String userId = authReqModel.getId();
+
+        // SecurityCOntextHolder는 누가 인증했는지에 대한 정보를 가지고  있다
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         Date now = new Date();
+
+        // access token을 만든다.
         AuthToken accessToken = tokenProvider.createAuthToken(
                 userId,
                 ((UserPrincipal) authentication.getPrincipal()).getRoleType().getCode(),
@@ -61,6 +70,8 @@ public class AuthController {
         );
 
         long refreshTokenExpiry = appProperties.getAuth().getRefreshTokenExpiry();
+
+        // Refresh Token을 생성한다.
         AuthToken refreshToken = tokenProvider.createAuthToken(
                 appProperties.getAuth().getTokenSecret(),
                 new Date(now.getTime() + refreshTokenExpiry)
@@ -84,11 +95,17 @@ public class AuthController {
         return ApiResponse.success("token", accessToken.getToken());
     }
 
+    /*
+    * 토큰 갱신
+    * */
     @GetMapping("/refresh")
     public ApiResponse refreshToken (HttpServletRequest request, HttpServletResponse response) {
+
         // access token 확인
         String accessToken = HeaderUtil.getAccessToken(request);
         AuthToken authToken = tokenProvider.convertAuthToken(accessToken);
+
+        // 정상 토큰인지 확인하는 과정, 정상토큰 아니면 잘못된 토큰 응답 Return
         if (!authToken.validate()) {
             return ApiResponse.invalidAccessToken();
         }
@@ -108,6 +125,7 @@ public class AuthController {
                 .orElse((null));
         AuthToken authRefreshToken = tokenProvider.convertAuthToken(refreshToken);
 
+        // refresh token이 정상인지 확인.
         if (authRefreshToken.validate()) {
             return ApiResponse.invalidRefreshToken();
         }
@@ -119,6 +137,8 @@ public class AuthController {
         }
 
         Date now = new Date();
+
+        // 새로운 Access Token 생성
         AuthToken newAccessToken = tokenProvider.createAuthToken(
                 userId,
                 roleType.getCode(),
