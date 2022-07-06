@@ -41,6 +41,7 @@ import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterN
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+
     private final AuthTokenProvider tokenProvider;
     private final AppProperties appProperties;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
@@ -50,7 +51,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         String targetUrl = determineTargetUrl(request, response, authentication);
-
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -76,7 +76,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
         ProviderType providerType = ProviderType.valueOf(authToken.getAuthorizedClientRegistrationId().toUpperCase());
 
-        //
+
         OidcUser user = ((OidcUser) authentication.getPrincipal());
 
         // getOAuth2UserInfo(providerType, user.getAttributes()); => return new GoogkeOuauthUserInfo()

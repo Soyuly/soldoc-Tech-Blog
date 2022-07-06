@@ -94,7 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 //authoization 응답이 처리될 URI
                 .redirectionEndpoint()
-                .baseUri("oauth2/redirect/*")
+                .baseUri("/*/oauth2/code/*")
                 .and()
 
                 // 로그인 성공 이의 설정을 시작
@@ -103,7 +103,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .successHandler(oAuth2AuthenticationSuccessHandler()) //로그인 성공했을 때 handler
                 .failureHandler(oAuth2AuthenticationFailureHandler()); // 실패
-
         // 토큰을 인증하는 필터
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
