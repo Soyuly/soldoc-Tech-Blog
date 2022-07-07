@@ -1,10 +1,6 @@
 package com.soldoc.tech.domain.like;
 
 
-import com.soldoc.tech.domain.like.dao.LikeDao;
-import com.soldoc.tech.domain.like.model.LikeEntity;
-import com.soldoc.tech.domain.like.service.LikeService;
-import com.soldoc.tech.domain.like.web.dto.LikeDto;
 import com.soldoc.tech.domain.post.model.Post;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -18,11 +14,11 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 public class LikeServiceTest {
 
-    @InjectMocks
-    private LikeService likeService;
-
-    @Mock
-    private LikeDao likeDao;
+//    @InjectMocks
+//    private LikeService likeService;
+//
+//    @Mock
+//    private LikeDao likeDao;
 
 
 }
