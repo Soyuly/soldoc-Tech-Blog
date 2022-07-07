@@ -1,5 +1,9 @@
 package com.soldoc.tech.domain.post.model;
 
+
+
+import com.soldoc.tech.domain.like.model.LikeEntity;
+import com.soldoc.tech.domain.like.web.dto.LikeDto;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +14,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -21,11 +27,6 @@ public class Post extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    // N : M 외래키
-    // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
-    @OneToMany(mappedBy = "post")
-    private List<PostKeyword> postKeywords = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;
@@ -38,31 +39,47 @@ public class Post extends BaseTime {
     @Column(columnDefinition = "INT DEFAULT 0")
     private int viewCount;
 
+    @Column(columnDefinition = "TINYINT DEFAULT 0")
+    private short likeCount;
+
     //작성자
+    @Column(nullable = false)
     private String author;
 
-    //좋아요 개수
-    @Column(name="LIKE_COUNT", columnDefinition = "TINYINT DEFAULT 0")
-    private short likeCount;
+
+    // N : M 외래키
+    // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
+    @OneToMany(mappedBy = "post")
+    private List<PostKeyword> postKeywords = new ArrayList<>();
+
 
     @Builder
     public Post(
             String title,
             String body,
             String author,
-            int viewCount,
-            short likeCount
+            int viewCount
     ){
         this.title = title;
         this.body = body;
         this.author = author;
         this.viewCount = viewCount;
-        this.likeCount = likeCount;
     }
 
     public void update(String title, String body){
         this.title = title;
         this.body = body;
     }
+
+
+
+    public static Post createPost(String title, String body, String author){
+        return Post.builder()
+                .title(title)
+                .body(body)
+                .author(author)
+                .build();
+    }
+
 
 }
