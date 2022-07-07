@@ -16,5 +16,4 @@ public class SoldocBlogApplication {
     public static void main(String[] args) {
         SpringApplication.run(SoldocBlogApplication.class, args);
     }
-
 }
