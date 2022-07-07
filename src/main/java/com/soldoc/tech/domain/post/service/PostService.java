@@ -1,15 +1,8 @@
 package com.soldoc.tech.domain.post.service;
 
-import com.soldoc.tech.domain.like.dao.LikeDao;
-import com.soldoc.tech.domain.like.model.LikeEntity;
-import com.soldoc.tech.domain.like.service.LikeService;
-import com.soldoc.tech.domain.like.web.dto.LikeDto;
 import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
-import com.soldoc.tech.domain.post.web.dto.PostListResponseDto;
-import com.soldoc.tech.domain.post.web.dto.PostResponseDto;
-import com.soldoc.tech.domain.post.web.dto.PostSaveRequestDto;
-import com.soldoc.tech.domain.post.web.dto.PostUpdateRequestDto;
+import com.soldoc.tech.domain.post.web.dto.*;
 import com.soldoc.tech.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +19,6 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
     private final PostDao postDao;
-    private final LikeService likeService;
 
 
     @Transactional
@@ -73,16 +65,25 @@ public class PostService {
         return id;
     }
 
-    public void createPostAndLikes(PostListResponseDto postListResponseDto){
-        Post post = Post.createPost(postListResponseDto.getTitle(), postListResponseDto.getBody(), postListResponseDto.getAuthor());
-
-        List<LikeEntity> likes = Post.builder().build().getPostLikes();
-
-        for(LikeEntity likeEntity : likes){
-            LikeEntity like = LikeEntity.createLikeEntity(likeEntity.getIpAddress(), post);
-            post.putLike(like);
-        }
-        postDao.save(post);
+    @Transactional
+    public boolean addLike(PostLikeReqDto postLikeReqDto, Long id){
+        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        post.addLike(postLikeReqDto.toEntity().getLikeCount());
+        return true;
     }
+
+    @Transactional
+    public boolean deleteLike(PostLikeReqDto postLikeReqDto, Long id){
+        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        post.deleteLike(postLikeReqDto.toEntity().getLikeCount());
+        return true;
+    }
+
+
+
+
+
+
+
 
 }

@@ -5,6 +5,7 @@ import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -53,17 +54,26 @@ public class Post extends BaseTime {
             String title,
             String body,
             String author,
-            int viewCount
+            int viewCount,
+            short likeCount
     ){
         this.title = title;
         this.body = body;
         this.author = author;
         this.viewCount = viewCount;
+        this.likeCount = likeCount;
     }
 
     public void update(String title, String body){
         this.title = title;
         this.body = body;
+    }
+
+    public void addLike(short likeCount){
+        this.likeCount = (short) (likeCount+1);
+    }
+    public void deleteLike(short likeCount){
+        this.likeCount = (short) (likeCount-1);
     }
 
 

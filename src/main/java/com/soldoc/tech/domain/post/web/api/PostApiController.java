@@ -3,10 +3,7 @@ package com.soldoc.tech.domain.post.web.api;
 
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.service.PostService;
-import com.soldoc.tech.domain.post.web.dto.PostListResponseDto;
-import com.soldoc.tech.domain.post.web.dto.PostResponseDto;
-import com.soldoc.tech.domain.post.web.dto.PostSaveRequestDto;
-import com.soldoc.tech.domain.post.web.dto.PostUpdateRequestDto;
+import com.soldoc.tech.domain.post.web.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +49,16 @@ public class PostApiController {
     @DeleteMapping("/api/contents/{id}")
     public Long delete(@PathVariable Long id){
         return postService.delete(id);
+    }
+
+    @PostMapping("/api/contents/{id}/addlike")
+    public boolean addLike(@RequestBody PostLikeReqDto postLikeReqDto, @PathVariable Long id){
+        return postService.addLike(postLikeReqDto, id);
+    }
+
+    @PostMapping("/api/contents/{id}/deletelike")
+    public boolean deleteLike(@RequestBody PostLikeReqDto postLikeReqDto, @PathVariable Long id){
+        return postService.addLike(postLikeReqDto, id);
     }
 
 
