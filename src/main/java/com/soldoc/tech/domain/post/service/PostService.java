@@ -1,19 +1,24 @@
 package com.soldoc.tech.domain.post.service;
 
+import com.soldoc.tech.domain.like.dao.LikeDao;
+import com.soldoc.tech.domain.like.model.LikeEntity;
+import com.soldoc.tech.domain.like.service.LikeService;
+import com.soldoc.tech.domain.like.web.dto.LikeDto;
 import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.web.dto.PostListResponseDto;
 import com.soldoc.tech.domain.post.web.dto.PostResponseDto;
 import com.soldoc.tech.domain.post.web.dto.PostSaveRequestDto;
 import com.soldoc.tech.domain.post.web.dto.PostUpdateRequestDto;
+import com.soldoc.tech.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 //postsRepository결과의 값(Post의 Stream)을 map을 통해 PostListResponseDto로 변환->List로 반환하는 메소드
@@ -21,6 +26,8 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
     private final PostDao postDao;
+    private final LikeService likeService;
+
 
     @Transactional
     public List<PostListResponseDto> findAllContent() {
@@ -66,8 +73,16 @@ public class PostService {
         return id;
     }
 
+    public void createPostAndLikes(PostListResponseDto postListResponseDto){
+        Post post = Post.createPost(postListResponseDto.getTitle(), postListResponseDto.getBody(), postListResponseDto.getAuthor());
 
+        List<LikeEntity> likes = Post.builder().build().getPostLikes();
 
-
+        for(LikeEntity likeEntity : likes){
+            LikeEntity like = LikeEntity.createLikeEntity(likeEntity.getIpAddress(), post);
+            post.putLike(like);
+        }
+        postDao.save(post);
+    }
 
 }

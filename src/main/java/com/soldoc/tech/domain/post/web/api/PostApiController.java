@@ -8,8 +8,10 @@ import com.soldoc.tech.domain.post.web.dto.PostResponseDto;
 import com.soldoc.tech.domain.post.web.dto.PostSaveRequestDto;
 import com.soldoc.tech.domain.post.web.dto.PostUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -50,6 +52,12 @@ public class PostApiController {
     @DeleteMapping("/api/contents/{id}")
     public Long delete(@PathVariable Long id){
         return postService.delete(id);
+    }
+
+
+    @PostMapping("/api/contents/like")
+    public void createPostAndLikes(PostListResponseDto postListResponseDto) {
+        postService.createPostAndLikes(postListResponseDto);
     }
 
 }

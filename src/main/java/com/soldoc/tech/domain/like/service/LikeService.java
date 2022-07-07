@@ -1,38 +1,38 @@
-package com.soldoc.tech.domain.like.service;//package com.soldoc.tech.domain.keyword.service;
+package com.soldoc.tech.domain.like.service;
+
 
 import com.soldoc.tech.domain.like.dao.LikeDao;
-import com.soldoc.tech.domain.like.model.Like;
+import com.soldoc.tech.domain.like.model.LikeEntity;
+import com.soldoc.tech.domain.like.web.dto.LikeDto;
 import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
-import com.soldoc.tech.domain.user.model.User;
+import com.soldoc.tech.domain.post.web.dto.PostListResponseDto;
+import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
-@Transactional
 @RequiredArgsConstructor
 @Service
 public class LikeService {
-    private LikeDao likeDao;
-    private PostDao postDao;
+    private final LikeDao likeDao;
+    private final PostDao postDao;
 
-    public boolean addLike(User user, Long postId){
-        Post post = postDao.findById(postId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+    private final EntityManager em;
+    private List p;
 
-        //좋아요 중복 확인
-        if(isNotAlreadyLike(user, post)){
-            likeDao.save(new Like(post, user));
-            return true;
-        }
-        return false;
-
-
+    @Transactional
+    public String like(LikeDto likeDto) {
+        return likeDao.save(likeDto.toEntity()).getIpAddress(); //저장되고, 그 중 ip주소 전달
     }
-    //사용자가 이미 좋아요한 게시물인지 확인
-    //.isPresent: 좋아요한 게시물: 1  / 좋아요하지 않은 게시물: 0
-    private boolean isNotAlreadyLike(User user, Post post){
-        return likeDao.findByUserAndPost(user, post).isPresent();
-    }
+
+
 }

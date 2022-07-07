@@ -31,21 +31,16 @@ public class PostDaoTest {
     }
 
 
-
-
-
-
     @Test
     public void 게시물저장_불러오기() {
         //given
         String title = "테스트 게시물 제목";
         String body = "테스트 게시물 내용";
-
+        Post a =
         postDao.save(Post.builder()
                 .title(title)
                 .body(body)
-                .build()
-        );
+                .build());
         //when
         List<Post> postList = postDao.findAll();
 
@@ -64,7 +59,6 @@ public class PostDaoTest {
                 .body("body")
                 .author("author")
                 .viewCount(4)
-                .likeCount((short) 5)
                 .build());
 
         //when

@@ -1,6 +1,9 @@
 package com.soldoc.tech.domain.post.model;
 
-import com.soldoc.tech.domain.like.model.Like;
+
+
+import com.soldoc.tech.domain.like.model.LikeEntity;
+import com.soldoc.tech.domain.like.web.dto.LikeDto;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +28,6 @@ public class Post extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false)
     private String title;
 
@@ -38,41 +40,52 @@ public class Post extends BaseTime {
     private int viewCount;
 
     //작성자
+    @Column(nullable = false)
     private String author;
 
     //좋아요 개수
-    @Column(name="LIKE_COUNT", columnDefinition = "TINYINT DEFAULT 0")
-    private short likeCount;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LikeEntity> postLikes = new ArrayList<>();
 
     // N : M 외래키
     // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
     @OneToMany(mappedBy = "post")
     private List<PostKeyword> postKeywords = new ArrayList<>();
 
-    // Like에 대한 외래키(N : 1)
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    Set<Like> likes = new HashSet<>();
 
     @Builder
     public Post(
             String title,
             String body,
             String author,
-            int viewCount,
-            short likeCount
+            int viewCount
     ){
         this.title = title;
         this.body = body;
         this.author = author;
         this.viewCount = viewCount;
-        this.likeCount = likeCount;
     }
-
-
 
     public void update(String title, String body){
         this.title = title;
         this.body = body;
+    }
+
+
+
+    public static Post createPost(String title, String body, String author){
+        return Post.builder()
+                .title(title)
+                .body(body)
+                .author(author)
+                .build();
+    }
+
+    public void putLike(LikeEntity likeEntity){
+        this.postLikes.add(likeEntity);
+    }
+    public List<LikeEntity> getLikes(LikeEntity likeEntity){
+        return this.postLikes;
     }
 
 }

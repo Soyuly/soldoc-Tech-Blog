@@ -1,6 +1,5 @@
 package com.soldoc.tech.domain.keyword.model;
 
-import com.soldoc.tech.domain.like.model.Like;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import com.soldoc.tech.domain.theme.model.Theme;
 import lombok.Getter;
@@ -21,6 +20,10 @@ public class Keyword {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 키워드이름
+    @Column(length = 25, nullable = false)
+    private String name;
+
     // Theme에 대한 외래키(N : 1)
     @ManyToOne
     @JoinColumn(name="THEME_ID")
@@ -31,7 +34,5 @@ public class Keyword {
     private List<PostKeyword> postKeywords = new ArrayList<>();
 
 
-    // 키워드이름
-    @Column(length = 25, nullable = false)
-    private String name;
+
 }
