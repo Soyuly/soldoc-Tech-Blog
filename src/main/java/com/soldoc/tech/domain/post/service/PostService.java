@@ -3,7 +3,6 @@ package com.soldoc.tech.domain.post.service;
 import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.web.dto.*;
-import com.soldoc.tech.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -1,7 +1,6 @@
 package com.soldoc.tech.domain.like;
 
-import com.soldoc.tech.domain.like.dao.LikeDao;
-import com.soldoc.tech.domain.like.model.LikeEntity;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
