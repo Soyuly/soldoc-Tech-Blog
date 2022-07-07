@@ -2,6 +2,7 @@ package com.soldoc.tech.domain.keyword.model;
 
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import com.soldoc.tech.domain.theme.model.Theme;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,6 +33,12 @@ public class Keyword {
     // Post에 대한 외래키(N : M)
     @OneToMany(mappedBy = "keyword")
     private List<PostKeyword> postKeywords = new ArrayList<>();
+
+    @Builder
+    public Keyword(String name, Theme theme){
+        this.name = name;
+        this.theme = theme;
+    }
 
 
 
