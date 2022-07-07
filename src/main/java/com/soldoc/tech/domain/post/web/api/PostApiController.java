@@ -55,9 +55,5 @@ public class PostApiController {
     }
 
 
-    @PostMapping("/api/contents/like")
-    public void createPostAndLikes(PostListResponseDto postListResponseDto) {
-        postService.createPostAndLikes(postListResponseDto);
-    }
 
 }

@@ -39,13 +39,13 @@ public class Post extends BaseTime {
     @Column(columnDefinition = "INT DEFAULT 0")
     private int viewCount;
 
+    @Column(columnDefinition = "TINYINT DEFAULT 0")
+    private short likeCount;
+
     //작성자
     @Column(nullable = false)
     private String author;
 
-    //좋아요 개수
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LikeEntity> postLikes = new ArrayList<>();
 
     // N : M 외래키
     // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
@@ -81,11 +81,5 @@ public class Post extends BaseTime {
                 .build();
     }
 
-    public void putLike(LikeEntity likeEntity){
-        this.postLikes.add(likeEntity);
-    }
-    public List<LikeEntity> getLikes(LikeEntity likeEntity){
-        return this.postLikes;
-    }
 
 }
