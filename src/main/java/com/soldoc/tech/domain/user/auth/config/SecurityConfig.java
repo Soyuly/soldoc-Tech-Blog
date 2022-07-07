@@ -1,7 +1,9 @@
 package com.soldoc.tech.domain.user.auth.config;
 
-
-import com.soldoc.tech.oauth.security.service.CustomOAuth2UserService;
+import com.soldoc.tech.domain.user.auth.JwtAuthFilter;
+import com.soldoc.tech.domain.user.auth.service.CustomOAuth2UserService;
+import com.soldoc.tech.domain.user.auth.service.TokenService;
+import com.soldoc.tech.domain.user.auth.success.OAuth2SuccessHandler;
 import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
