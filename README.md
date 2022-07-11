@@ -83,7 +83,7 @@ http://127.0.0.1:9000/api/save
 - 예시
 #### Request
 ```
-http://127.0.0.1:9000/api/contents/{id}
+http://127.0.0.1:9000/api/contents/1
 ```
 
 #### Body
@@ -116,7 +116,7 @@ http://127.0.0.1:9000/api/contents/{id}
 - 예시
 #### Request
 ```
-http://127.0.0.1:9000/api/contents/{id}
+http://127.0.0.1:9000/api/contents/1
 ```
 
 #### Reponse
@@ -188,7 +188,7 @@ http://127.0.0.1:9000/api/contents/search
 
 ---
 
-addLike()
+### addLike()
 * 요청방식: post
 * 기능: 해당 게시물의 좋아요 갯수를 하나 증가시킨다.
 * url: http://127.0.0.1:9000/api/contents/{id}/addLike
@@ -208,7 +208,7 @@ http://127.0.0.1:9000/api/contents/1/addLike
 }
 ```
 ---
-deleteLike()
+### deleteLike()
 * 요청방식: post
 * 기능: 해당 게시물의 좋아요 갯수를 하나 감소시킨다.
 * url: http://127.0.0.1:9000/api/contents/{id}/deleteLike
