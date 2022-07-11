@@ -33,9 +33,13 @@ public class PostKeyword implements Serializable {
     @JoinColumn(name = "KEYWORD_ID")
     Keyword keyword;
 
+    String name;
+
+
     @Builder
-    public PostKeyword(Post post, Keyword keyword){
+    public PostKeyword(Post post, Keyword keyword, String name){
         this.post = post;
         this.keyword = keyword;
+        this.name = name;
     }
 }

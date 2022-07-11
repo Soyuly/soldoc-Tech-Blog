@@ -18,10 +18,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class PostApiController {
-    //deleteAt 복원간으하게
-    //페이지 처리
-    //삭제,업데이트
+    //좋아요 값 그대로 보내 주게, 특정 게시글 방문 후 조회수 추가  //
     //post할때 결과값을 다시 리턴해주는게 더 좋다 (클라이언트에서 그대로 상태변화를 주면 되니까)
+    //삭제(deleteAt 복원가능하게), 업데이트 예외처리(특정 데이터 안넣어준다면?)
+    //findAll 페이지 처리
+    //theme CRUD : 관리자 쪽에서 테마도 추가,삭제,수정 할 수 있도록 (5개)
+
+
 
 
 
@@ -35,6 +38,7 @@ public class PostApiController {
     public List<PostListResponseDto> findAllContent() {
         return postService.findAllContent();
     }
+
     @PostMapping("/api/contents")
     public void create(@RequestBody PostAllRequestDto postAllRequestDto){
         postService.create(postAllRequestDto);
@@ -49,7 +53,7 @@ public class PostApiController {
 
     //해당 게시물을 방문
     @GetMapping("/api/contents/{id}")
-    public PostResponseDto findById(@PathVariable Long id){
+    public PostListResponseDto findById(@PathVariable Long id){
         return postService.findById(id);
     }
 
@@ -68,13 +72,13 @@ public class PostApiController {
 
     //해당 게시물 좋아요 클릭
     @PostMapping("/api/contents/{id}/addLike")
-    public boolean addLike(@PathVariable Long id){
+    public short addLike(@PathVariable Long id){
         return postService.addLike(id);
     }
 
     //해당 게시물 좋아요 클릭하지 않음
     @PostMapping("/api/contents/{id}/deleteLike")
-    public boolean deleteLike(@PathVariable Long id){
+    public short deleteLike(@PathVariable Long id){
         return postService.deleteLike(id);
     }
 
