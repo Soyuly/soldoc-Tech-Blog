@@ -372,11 +372,11 @@ http://localhost:9000/api/auth/refresh
 ### public ApiResponse getUser()
 - 요청방식 : get
 - 기능 : 토큰을 통해 로그인한 유저의 정보를 가져온다.
-- url : http://localhost:9000/api/auth/refresh
+- url : http://localhost:9000/api/users
 - 예시
 #### Request
 ```
-http://localhost:9000/api/auth/refresh
+http://localhost:9000/api/users
 ```
 
 #### Reponse
