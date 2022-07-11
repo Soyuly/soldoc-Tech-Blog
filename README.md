@@ -1,59 +1,30 @@
-# Django-RestFramework
+# SOLDOC TechBlog API
 
-### getPosts()
-- 요청방식 : get
-- 기능 : 게시물들의 목록을 보여준다.
-- url : http://127.0.0.1:8000/api/
+### public Long save(ThemeSaveRequestdDto themeSaveRequestdDto)
+- 요청방식 : post
+- 기능 : 키워드 테마를 추가한다.
+- url : http://localhost:9000/api/theme
 - 예시
 #### Request
 ```
-http://127.0.0.1:8000/api
+http://localhost:9000/api/theme
 ```
-
+#### body
+```
+{
+    "name" : "React"
+}
+```
 #### Response
 ```
-HTTP 200 OK
-Allow: GET, OPTIONS
-Content-Type: application/json
-Vary: Accept
-
-[
-    {
-        "id": 1,
-        "title": "장고",
-        "body": "rest api",
-        "author": "소열",
-        "pub_date": "2022-07-01T10:49:21.347539Z"
-    },
-    {
-        "id": 2,
-        "title": "여러분들 화이팅,,!",
-        "body": "세션 잘 하고 있죠,,?",
-        "author": "소열",
-        "pub_date": "2022-07-01T10:49:50.016594Z"
-    },
-    {
-        "id": 3,
-        "title": "아자아자",
-        "body": "고고고고고",
-        "author": "양소열",
-        "pub_date": "2022-07-01T10:50:12.122085Z"
-    },
-    {
-        "id": 4,
-        "title": "세영",
-        "body": "api테스트중",
-        "author": "양소열",
-        "pub_date": "2022-07-01T10:50:22.604305Z"
-    }
-]
+themeId
 ```
 <hr/>
 
-### createPosts()
+###  public PostVO save(@RequestBody PostVO postResponse)
 - 요청방식 : post
-- 기능 : 새로운 게시글을 생성한다.
-- url : http://127.0.0.1:8000/api/create/
+- 기능 : Post 테이블에 게시글을 저장하고, 해당 Theme에 맞게 키워드도 각각 저장시킨다.
+- url : http://localhost:9000/api/postsy
 - 예시
 #### Request
 ```
@@ -63,92 +34,142 @@ http://127.0.0.1:8000/api/create/
 #### Body
 ```
 {
-  "title" : "테스트",
-  "body" : "post요청",
-  "author" : "test"
+    "title" : "CSR에 SEO 적용하기",
+    "body" : "React Helmet 라이브러리를 통해서 적용",
+    "author" : "soyul",
+    "keywords" : ["react","helmet","seo"],
+    "theme" : "React"
+
 }
 ```
 
 #### Reponse
 ```
 {
-    "id": 5,
-    "title": "테스트",
-    "body": "post요청",
-    "author": "test",
-    "pub_date": "2022-07-01T14:49:38.980197Z"
+    "title": "CSR에 SEO 적용하기",
+    "body": "React Helmet 라이브러리를 통해서 적용",
+    "author": "soyul",
+    "keywords": [
+        "react",
+        "helmet",
+        "seo"
+    ],
+    "theme": "React"
 }
 ```
 <hr/>
 
-### updatePosts()
-- 요청방식 : post
-- 기능 : 게시물을 수정한다.
-- url : http://127.0.0.1:8000/api/update
+### public ArrayList<String> getKewordById(@PathVariable("id") Long themeId)
+- 요청방식 : GET
+- 기능 : 특정 테마에 포함되는 모든 키워드들을 가져온다.
+- url : http://localhost:9000/api/keywords/{theme_id}
 - 예시
 #### Request
 ```
-http://127.0.0.1:8000/api/update
+http://localhost:9000/api/keywords/1
 ```
 
-#### Body
+#### Response
 ```
-{
-  "id" : 5,
-  "title" : "테스트 수정하기",
-  "body" : "post 수정요청",
-  "author" : "test"
-}
-```
-
-#### Reponse
-```
-{
-    "id": 5,
-    "title": "테스트 수정하기",
-    "body": "post 수정요청",
-    "author": "test",
-    "pub_date": "2022-07-01T14:49:38.980197Z"
-}
+[
+    "react",
+    "helmet",
+    "seo"
+]
 ```
 <hr/>
 
-### deletePosts()
+
+## Authroization Api
+
+### authorizationEndpoint()
+- 요청방식 : GET
+- 기능 : 구글 로그인에 성공하면, Redirect URI를 통해 토큰을 반환한다.
+- url : http://localhost:9000/oauth2/authorization/google
+- redirect url : http://localhost:9000/oauth2/code/google
+- 예시
+#### Request
+```
+http://localhost:9000/oauth2/authorization/google
+```
+
+#### Redirect
+```
+http://localhost:9000/?token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTQyMDcyMzU3ODU5OTQwMjU1MDYiLCJyb2xlIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjU4MzY5Mzk1fQ.2_bHVRbpoTwqpkI8kZZLAeC1Wbk4URqlPcvCSyrjlZc
+```
+<hr/>
+
+### public String test()
 - 요청방식 : get
-- 기능 : 게시물을 수정한다.
-- url : http://127.0.0.1:8000/api/delete/게시글번호
+- 기능 : 로그인 한 유저의 Refresh Token과 Access token이 반환된다.
+- url : http://127.0.0.1:8000/api/auth/test
 - 예시
 #### Request
 ```
-http://127.0.0.1:8000/api/update/5
+http://127.0.0.1:8000/api/auth/test
+```
+
+#### Reponse
+```
+ {
+    "access_token ": eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTQyMDcyMzU3ODU5OTQwMjU1MDYiLCJyb2xlIjoiUk9MRV9VU0VSIiwiZXhwIjoxNjU4MzY4NzkwfQ.hD-9R6Eh_iB2390RqxoG7KhkhDmWBk0ShKGY1VDjsjs,
+    "refresh_token ": eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5MjZEOTZDOTAwMzBERDU4NDI5RDI3NTFBQzFCREJCQyIsImV4cCI6MTY1ODEwOTU5MH0.v97ISC2HBKSKAe3l4OvgnyZnwJmHgWL_5KWHK1ckxPA
+ }
+```
+<hr/>
+
+### public ApiResponse refreshToken()
+- 요청방식 : get
+- 기능 : 만료된 Access Token이면, refresh token을 통해 Access Token을 갱신한다.
+- url : http://localhost:9000/api/auth/refresh
+- 예시
+#### Request
+```
+http://localhost:9000/api/auth/refresh
 ```
 
 #### Reponse
 ```
 {
-    "message": "sucess",
-    "code": 200
+    "header": {
+        "code": 500,
+        "message": "Not expired token yet."
+    },
+    "body": null
 }
 ```
 <hr/>
 
-### getPostById()
+### public ApiResponse getUser()
 - 요청방식 : get
-- 기능 : 해당하는 아이디의 게시글을 가져온다.
-- url : http://127.0.0.1:8000/api/게시글번호
+- 기능 : 토큰을 통해 로그인한 유저의 정보를 가져온다.
+- url : http://localhost:9000/api/auth/refresh
 - 예시
 #### Request
 ```
-http://127.0.0.1:8000/api/3
+http://localhost:9000/api/auth/refresh
 ```
 
 #### Reponse
 ```
 {
-    "id": 3,
-    "title": "아자아자",
-    "body": "고고고고고",
-    "author": "양소열",
-    "pub_date": "2022-07-01T10:50:12.122085Z"
+    "header": {
+        "code": 200,
+        "message": "SUCCESS"
+    },
+    "body": {
+        "user": {
+            "userId": "114207235785994025506",
+            "username": "SoYul Yang",
+            "email": "soyul8147@gmail.com",
+            "emailVerifiedYn": "Y",
+            "profileImageUrl": "https://lh3.googleusercontent.com/a/AItbvmlQQQ8UgYCyTGGRk_CFOcW9auxtuMH84Q-eU_Kk=s96-c",
+            "providerType": "GOOGLE",
+            "roleType": "USER",
+            "createdAt": "2022-07-11T11:09:55.124",
+            "modifiedAt": "2022-07-11T11:09:55.124"
+        }
+    }
 }
 ```
+<hr/>
