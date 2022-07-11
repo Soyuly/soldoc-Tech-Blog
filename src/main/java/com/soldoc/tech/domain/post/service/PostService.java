@@ -1,6 +1,6 @@
 package com.soldoc.tech.domain.post.service;
 
-import com.soldoc.tech.common.PostAllRequestDto;
+import com.soldoc.tech.common.PostVO;
 import com.soldoc.tech.domain.keyword.dao.KeywordDao;
 import com.soldoc.tech.domain.keyword.model.Keyword;
 import com.soldoc.tech.domain.keyword.web.dto.KeywordSaveRequestDto;
@@ -12,7 +12,10 @@ import com.soldoc.tech.domain.postkeyword.dto.PostKeywordSaveRequestDto;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import com.soldoc.tech.domain.theme.dao.ThemeDao;
 import com.soldoc.tech.domain.theme.model.Theme;
+import com.soldoc.tech.oauth.api.entity.user.User;
+import com.soldoc.tech.oauth.api.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -27,7 +30,7 @@ public class PostService {
     private final PostDao postDao;
     private final PostkeywordDao postkeywordDao;
     private final KeywordDao keywordDao;
-
+    private final UserService userService;
     private final ThemeDao themeDao;
 
 
@@ -78,6 +81,12 @@ public class PostService {
                 .build();
     }
 
+//    @Transactional
+//    public PostResponseDto findByUserId(Long userId){
+//        List<Post> post = postDao.findAllByUserId(userId);
+//        return new PostResponseDto(post.getTitle(), post.getPostKeywords());
+//    }
+
 
 
     @Transactional
@@ -104,13 +113,22 @@ public class PostService {
     }
 
     @Transactional
-    public void create(PostAllRequestDto postAllRequestDto){
+    public void create(PostVO postAllRequestDto){
+        // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User)
+                SecurityContextHolder
+                .getContext()
+                        .getAuthentication()
+                        .getPrincipal();
+
+        User user = userService.getUser(principal.getUsername());
 
         //Post 객체 생성 (Dto -> Entity화)
         Post post = postDao.save(PostSaveRequestDto.builder()
                 .title(postAllRequestDto.getTitle())
                 .body(postAllRequestDto.getBody())
-                .author(postAllRequestDto.getAuthor())
+                .author(user.getUsername())
+                .user(user)
                 .build().toEntity());
 
         Theme themeEntity = themeDao.findByName(postAllRequestDto.getTheme());

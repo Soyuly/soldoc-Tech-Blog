@@ -1,10 +1,12 @@
 package com.soldoc.tech.domain.post.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
+import com.soldoc.tech.oauth.api.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +47,11 @@ public class Post extends BaseTime {
     @Column(nullable = false)
     private String author;
 
+    //작성 계정
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name="USER_ID")
+    private User user;
 
     // N : M 외래키
     // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
@@ -59,13 +66,15 @@ public class Post extends BaseTime {
             String body,
             String author,
             int viewCount,
-            short likeCount
+            short likeCount,
+            User user
     ){
         this.title = title;
         this.body = body;
         this.author = author;
         this.viewCount = viewCount;
         this.likeCount = likeCount;
+        this.user = user;
     }
 
     public void update(String title, String body){
@@ -93,11 +102,12 @@ public class Post extends BaseTime {
     }
 
 
-    public static Post createPost(String title, String body, String author){
+    public static Post createPost(String title, String body, String author, User user){
         return Post.builder()
                 .title(title)
                 .body(body)
                 .author(author)
+                .user(user)
                 .build();
     }
 

@@ -1,6 +1,8 @@
 package com.soldoc.tech.oauth.api.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.oauth.security.entity.ProviderType;
 import com.soldoc.tech.oauth.security.entity.RoleType;
 import com.sun.istack.NotNull;
@@ -11,6 +13,8 @@ import lombok.Setter;
 import javax.validation.constraints.Size;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -72,6 +76,10 @@ public class User {
     @Column(name = "MODIFIED_AT")
     @NotNull
     private LocalDateTime modifiedAt;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<Post>();
 
     public User(
             @NotNull @Size(max = 64) String userId,

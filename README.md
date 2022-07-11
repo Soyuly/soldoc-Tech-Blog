@@ -1,5 +1,6 @@
-# Soldoc-Tech API
+# Soldoc_Tech API
 
+## Post CRUD API
 ### findAllContent()
 - 요청방식 : get
 - 기능 : 게시물들의 목록을 보여준다.
@@ -42,37 +43,30 @@ Vary: Accept
 ```
 <hr/>
 
-### savePost()
-- 요청방식 : post
+### public PostVO save(@RequestBody PostVO postResponse)
+- 요청방식 : POST
 - 기능 : 새로운 게시글을 생성한다.
 - url : http://127.0.0.1:9000/api/contents
 - 예시
 #### Request
 ```
-http://127.0.0.1:9000/api/save
+http://127.0.0.1:9000/api/contents
 ```
 
 #### Body
 ```
 {
-    "title": "안녕",
-    "body": "안녕하세요",
-    "author": "정윤수"
+    "title" : "CSR에 SEO 적용하기",
+    "body" : "React Helmet 라이브러리를 통해서 적용",
+    "keywords" : ["react","helmet","seo"],
+    "theme" : "React"
+
 }
 ```
 
 #### Reponse
 ```
-{
-        "title": "안녕",
-        "body": "안녕하세요",
-        "author": "정윤수",
-        "likeCount": 0,
-        "viewCount": 0,
-        "postKeywords": [],
-        "createdDate": "2022-07-11T10:55:20.052",
-        "modifiedDate": "2022-07-11T10:55:20.052"
-}
+추가예정
 ```
 <hr/>
 
@@ -128,66 +122,88 @@ http://127.0.0.1:9000/api/contents/1
 ```
 <hr/>
 
-### findById()
-- 요청방식 : get
+### findByUserId()
+- 요청방식 : GET
 - 기능 : 해당 아이디에 해당하는 게시글을 가져온다.
-- url : http://127.0.0.1:9000/api/contents/{id}
+- url : http://127.0.0.1:9000/api/users/posts
 - 예시
 #### Request
 ```
-http://127.0.0.1:9000/api/1
+http://127.0.0.1:9000/api/users/posts
 ```
 
 #### Reponse
 ```
-{
-    "title": "안녕",
-    "body": "안녕하세요",
-    "author": "정윤수",
-    "likeCount": 0,
-    "viewCount": 0,
-    "postKeywords": [],
-    "createdDate": "2022-07-11T10:55:20.052",
-    "modifiedDate": "2022-07-11T10:55:20.052"
-}
+[
+    {
+        "createdDate": "2022-07-11T18:20:17.36",
+        "modifiedDate": "2022-07-11T18:20:17.36",
+        "id": 1,
+        "title": "CSR에 SEO 적용하기",
+        "body": "React Helmet 라이브러리를 통해서 적용",
+        "viewCount": 0,
+        "likeCount": 0,
+        "author": "SoYul Yang",
+        "postKeywords": [
+            {
+                "id": 1
+            },
+            {
+                "id": 2
+            },
+            {
+                "id": 3
+            }
+        ]
+    }
+]
 ```
 
 ---
 ### search()
 * 요청방식: get
 * 기능: 게시물의 제목 또는 내용에서 사용자가 입력한 검색어가 포함된 게시글을 불러온다.
-* url: http://127.0.0.1:9000/api/contents
+* url: http://127.0.0.1:9000/api/word
 * 예시
 
 #### Request
 ```
-http://127.0.0.1:9000/api/contents/search
+http://127.0.0.1:9000/api/?word=react
 ```
 
-#### Body
+
+#### Request Params
 ```
-{
-    "word": "안녕"
-}
+"word" : "react"
 ```
 
 #### Response
 ```
-{
-    "title": "안녕",
-    "body": "안녕하세요",
-    "author": "정윤수",
-    "likeCount": 0,
-    "viewCount": 0,
-    "postKeywords": [],
-    "createdDate": "2022-07-11T10:55:20.052",
-    "modifiedDate": "2022-07-11T10:55:20.052"
-}
+[
+    {
+        "title": "CSR에 SEO 적용하기",
+        "body": "React Helmet 라이브러리를 통해서 적용",
+        "author": "SoYul Yang",
+        "likeCount": 0,
+        "viewCount": 0,
+        "postKeywords": [
+            {
+                "id": 13
+            },
+            {
+                "id": 14
+            },
+            {
+                "id": 15
+            }
+        ],
+        "createdDate": "2022-07-11T18:33:10.856",
+        "modifiedDate": "2022-07-11T18:33:10.856"
+    }
+]
 ```
 
-
 ---
-
 ### addLike()
 * 요청방식: post
 * 기능: 해당 게시물의 좋아요 갯수를 하나 증가시킨다.
@@ -250,44 +266,6 @@ themeId
 ```
 <hr/>
 
-###  public PostVO save(@RequestBody PostVO postResponse)
-- 요청방식 : post
-- 기능 : Post 테이블에 게시글을 저장하고, 해당 Theme에 맞게 키워드도 각각 저장시킨다.
-- url : http://localhost:9000/api/postsy
-- 예시
-#### Request
-```
-http://127.0.0.1:9000/api/create/
-```
-
-#### Body
-```
-{
-    "title" : "CSR에 SEO 적용하기",
-    "body" : "React Helmet 라이브러리를 통해서 적용",
-    "author" : "soyul",
-    "keywords" : ["react","helmet","seo"],
-    "theme" : "React"
-
-}
-```
-
-#### Reponse
-```
-{
-    "title": "CSR에 SEO 적용하기",
-    "body": "React Helmet 라이브러리를 통해서 적용",
-    "author": "soyul",
-    "keywords": [
-        "react",
-        "helmet",
-        "seo"
-    ],
-    "theme": "React"
-}
-```
-<hr/>
-
 ### public ArrayList<String> getKewordById(@PathVariable("id") Long themeId)
 - 요청방식 : GET
 - 기능 : 특정 테마에 포함되는 모든 키워드들을 가져온다.
@@ -307,7 +285,6 @@ http://localhost:9000/api/keywords/1
 ]
 ```
 <hr/>
-
 
 ## Authroization Api
 

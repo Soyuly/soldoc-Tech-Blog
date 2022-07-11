@@ -1,17 +1,12 @@
 package com.soldoc.tech.domain.post.web.api;
 
 
-import com.soldoc.tech.common.PostAllRequestDto;
-import com.soldoc.tech.domain.keyword.web.dto.KeywordSearchReqDto;
-import com.soldoc.tech.domain.post.model.Post;
+import com.soldoc.tech.common.PostVO;
 import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.*;
-import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.RequiredArgsConstructor;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 //@RequiredArgsConstructor: final로 선언된 필드 자동 생성자 생성
@@ -40,7 +35,7 @@ public class PostApiController {
     }
 
     @PostMapping("/api/contents")
-    public void create(@RequestBody PostAllRequestDto postAllRequestDto){
+    public void create(@RequestBody PostVO postAllRequestDto){
         postService.create(postAllRequestDto);
     }
 
