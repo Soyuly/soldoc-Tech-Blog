@@ -1,5 +1,7 @@
 package com.soldoc.tech.domain.keyword.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import com.soldoc.tech.domain.theme.model.Theme;
@@ -25,6 +27,7 @@ public class Keyword {
     private String name;
 
     // Theme에 대한 외래키(N : 1)
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name="THEME_ID")
     private Theme theme;

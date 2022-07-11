@@ -12,5 +12,6 @@ public interface KeywordDao extends JpaRepository<Keyword, Long> {
     List<Keyword> findAllSearch(String keyword);
 
 
+
     List<Keyword> findAllByThemeId(Long themeId);
 }

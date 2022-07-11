@@ -1,10 +1,13 @@
 package com.soldoc.tech.domain.theme.model;
 
+import com.soldoc.tech.domain.keyword.model.Keyword;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -16,8 +19,8 @@ public class Theme {
     private Long id;
 
 
-//    @OneToMany(mappedBy = "theme")
-//    private List<Keyword> keywords = new ArrayList<>();
+   @OneToMany(mappedBy = "theme")
+   private List<Keyword> keywords = new ArrayList<>();
 
     @Column(length = 50, nullable = false)
     private String name;
