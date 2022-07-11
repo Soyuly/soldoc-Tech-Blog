@@ -1,6 +1,8 @@
 package com.soldoc.tech.domain.post.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,6 +47,7 @@ public class Post extends BaseTime {
 
     // N : M 외래키
     // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
+    @JsonManagedReference
     @OneToMany(mappedBy = "post")
     private List<PostKeyword> postKeywords = new ArrayList<>();
 

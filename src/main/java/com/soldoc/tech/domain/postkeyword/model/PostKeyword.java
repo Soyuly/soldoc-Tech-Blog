@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.postkeyword.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.soldoc.tech.domain.keyword.model.Keyword;
 import com.soldoc.tech.domain.post.model.Post;
 import lombok.Builder;
@@ -12,19 +13,23 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @Entity
-@IdClass(PostKeywordId.class)
 @Table(name="PostKeyword")
 public class PostKeyword implements Serializable {
 
-    // Post테이블의 외래키
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // Post테이블의 외래키
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "POST_ID")
     Post post;
 
     // Keyword테이블의 외래키
-    @Id
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "KEYWORD_ID")
     Keyword keyword;
 

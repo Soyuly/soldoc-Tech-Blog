@@ -61,7 +61,7 @@ public class PostService {
     @Transactional
     public PostResponseDto findById(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        return new PostResponseDto(post.getTitle());
+        return new PostResponseDto(post.getTitle(), post.getPostKeywords());
     }
 
     @Transactional
@@ -123,6 +123,12 @@ public class PostService {
 
 
     }
+    @Transactional
+    public Post findByPostId(Long id){
+        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+        return post;
+    }
+
 
 
 
