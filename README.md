@@ -83,7 +83,7 @@ http://127.0.0.1:9000/api/save
 - 예시
 #### Request
 ```
-http://127.0.0.1:9000/api/contents/{id}
+http://127.0.0.1:9000/api/contents/1
 ```
 
 #### Body
@@ -116,7 +116,7 @@ http://127.0.0.1:9000/api/contents/{id}
 - 예시
 #### Request
 ```
-http://127.0.0.1:9000/api/contents/{id}
+http://127.0.0.1:9000/api/contents/1
 ```
 
 #### Reponse
