@@ -1,21 +1,23 @@
 package com.soldoc.tech.domain.post.service;
 
+import com.soldoc.tech.common.PostAllRequestDto;
 import com.soldoc.tech.domain.keyword.dao.KeywordDao;
 import com.soldoc.tech.domain.keyword.model.Keyword;
-import com.soldoc.tech.domain.keyword.web.dto.KeywordSearchReqDto;
+import com.soldoc.tech.domain.keyword.web.dto.KeywordSaveRequestDto;
 import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.web.dto.*;
 import com.soldoc.tech.domain.postkeyword.dao.PostkeywordDao;
+import com.soldoc.tech.domain.postkeyword.dto.PostKeywordSaveRequestDto;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
+import com.soldoc.tech.domain.theme.dao.ThemeDao;
+import com.soldoc.tech.domain.theme.model.Theme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 //postsRepository결과의 값(Post의 Stream)을 map을 통해 PostListResponseDto로 변환->List로 반환하는 메소드
@@ -25,6 +27,8 @@ public class PostService {
     private final PostDao postDao;
     private final PostkeywordDao postkeywordDao;
     private final KeywordDao keywordDao;
+
+    private final ThemeDao themeDao;
 
 
     @Transactional
@@ -93,39 +97,33 @@ public class PostService {
     }
 
     @Transactional
-    public long create(PostSaveRequestDto postSaveRequestDto, KeywordSearchReqDto keywordSearchReqDto){
+    public void create(PostAllRequestDto postAllRequestDto){
 
-        Post p3 = postDao.save(postSaveRequestDto.toEntity());
-        Long id = p3.getId();
+        //Post 객체 생성 (Dto -> Entity화)
+        Post post = postDao.save(PostSaveRequestDto.builder()
+                .title(postAllRequestDto.getTitle())
+                .body(postAllRequestDto.getBody())
+                .author(postAllRequestDto.getAuthor())
+                .build().toEntity());
 
-        System.out.println(">>>>>" + id);
+        Theme themeEntity = themeDao.findByName(postAllRequestDto.getTheme());
+        //Keyword 객체 생성  & PostKeyword 객체 생성
+        for(String keywordName: postAllRequestDto.getKeywords()){
+            Keyword keyword = keywordDao.save(KeywordSaveRequestDto.builder()
+                    .theme(themeEntity)
+                    .name(keywordName)
+                    .build().toEntity());
 
-        Keyword k1 = keywordDao.save(keywordSearchReqDto.toEntity());
+            PostKeyword postKeyword = postkeywordDao.save(PostKeywordSaveRequestDto.builder()
+                    .post(post)
+                    .keyword(keyword)
+                    .build().toEntity());
+        }
 
-        Long k_id = k1.getId();
-
-        return k_id;
-//
-////        String firstName = "";
-////        name.forEach((String na)-> );
-//        KeywordSearchReqDto k = KeywordSearchReqDto.builder()
-//                .name(name)
-//                .build();
-//
-//        Keyword k2 = k.toEntity();
-//        Keyword k3 = keywordDao.save(k2);
-//
-//
-//
-//        PostKeyword postKeyword = PostKeyword.builder()
-//                .post(p3)
-//                .keyword(k3)
-//                .build();
-//
-//        return postkeywordDao.save(postKeyword);
-
-
+        //TODO - return HTTP.CREATE
     }
+
+
     @Transactional
     public Post findByPostId(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));

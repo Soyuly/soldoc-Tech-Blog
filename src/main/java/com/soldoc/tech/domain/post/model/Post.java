@@ -3,6 +3,7 @@ package com.soldoc.tech.domain.post.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.Builder;
 import lombok.Getter;

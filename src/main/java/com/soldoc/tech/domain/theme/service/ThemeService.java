@@ -22,8 +22,8 @@ public class ThemeService {
 
     // 해당 주제에 맞는 Theme객체 찾기
     public Theme findByName (String name){
-        Theme entity = themeDao.findByName(name);
+        Theme ThemeEntity = themeDao.findByName(name);
 
-        return entity;
+        return ThemeEntity;
     }
 }
