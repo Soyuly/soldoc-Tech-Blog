@@ -257,7 +257,7 @@ themeId
 - 예시
 #### Request
 ```
-http://127.0.0.1:8000/api/create/
+http://127.0.0.1:9000/api/create/
 ```
 
 #### Body
@@ -331,11 +331,11 @@ http://localhost:9000/?token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTQyMDcyMzU3ODU5OT
 ### public String test()
 - 요청방식 : get
 - 기능 : 로그인 한 유저의 Refresh Token과 Access token이 반환된다.
-- url : http://127.0.0.1:8000/api/auth/test
+- url : http://127.0.0.1:9000/api/auth/test
 - 예시
 #### Request
 ```
-http://127.0.0.1:8000/api/auth/test
+http://127.0.0.1:9000/api/auth/test
 ```
 
 #### Reponse
