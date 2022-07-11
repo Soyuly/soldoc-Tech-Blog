@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.keyword.model;
 
+import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import com.soldoc.tech.domain.theme.model.Theme;
 import lombok.Builder;
@@ -8,9 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -39,6 +38,7 @@ public class Keyword {
         this.name = name;
         this.theme = theme;
     }
+
 
 
 

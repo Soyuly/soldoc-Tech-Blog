@@ -69,6 +69,8 @@ public class Post extends BaseTime {
         this.body = body;
     }
 
+
+
     public void addLike(short likeCount){
         this.likeCount = (short) (likeCount+1);
     }
