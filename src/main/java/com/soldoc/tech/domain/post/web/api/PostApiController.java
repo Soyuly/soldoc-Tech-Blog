@@ -1,9 +1,11 @@
 package com.soldoc.tech.domain.post.web.api;
 
 
+import com.soldoc.tech.domain.keyword.web.dto.KeywordSearchReqDto;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.*;
+import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +63,9 @@ public class PostApiController {
         return postService.addLike(postLikeReqDto, id);
     }
 
-
+    @PostMapping("/api/yy")
+    public long create(@RequestBody PostSaveRequestDto postSaveRequestDto, @RequestBody KeywordSearchReqDto keywordSearchReqDto){
+        return postService.create(postSaveRequestDto, keywordSearchReqDto);
+    }
 
 }

@@ -3,8 +3,8 @@ package com.soldoc.tech.domain.postkeyword.model;
 import java.io.Serializable;
 
 public class PostKeywordId implements Serializable {
-    private Long post;
-    private Long keyword;
+    private String post;
+    private String keyword;
 
     @Override
     public int hashCode(){

@@ -1,13 +1,10 @@
 package com.soldoc.tech.domain.theme.model;
 
-import com.soldoc.tech.domain.keyword.model.Keyword;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor

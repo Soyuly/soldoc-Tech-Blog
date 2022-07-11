@@ -1,8 +1,13 @@
 package com.soldoc.tech.domain.post.service;
 
+import com.soldoc.tech.domain.keyword.dao.KeywordDao;
+import com.soldoc.tech.domain.keyword.model.Keyword;
+import com.soldoc.tech.domain.keyword.web.dto.KeywordSearchReqDto;
 import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.web.dto.*;
+import com.soldoc.tech.domain.postkeyword.dao.PostkeywordDao;
+import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
     private final PostDao postDao;
+    private final PostkeywordDao postkeywordDao;
+    private final KeywordDao keywordDao;
 
 
     @Transactional
@@ -74,8 +81,47 @@ public class PostService {
     @Transactional
     public boolean deleteLike(PostLikeReqDto postLikeReqDto, Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+        int curLikeCount = postLikeReqDto.toEntity().getLikeCount();
+        if(curLikeCount <= 0){
+            return false;
+        }
         post.deleteLike(postLikeReqDto.toEntity().getLikeCount());
         return true;
+    }
+
+    @Transactional
+    public long create(PostSaveRequestDto postSaveRequestDto, KeywordSearchReqDto keywordSearchReqDto){
+
+        Post p3 = postDao.save(postSaveRequestDto.toEntity());
+        Long id = p3.getId();
+
+        System.out.println(">>>>>" + id);
+
+        Keyword k1 = keywordDao.save(keywordSearchReqDto.toEntity());
+
+        Long k_id = k1.getId();
+
+        return k_id;
+//
+////        String firstName = "";
+////        name.forEach((String na)-> );
+//        KeywordSearchReqDto k = KeywordSearchReqDto.builder()
+//                .name(name)
+//                .build();
+//
+//        Keyword k2 = k.toEntity();
+//        Keyword k3 = keywordDao.save(k2);
+//
+//
+//
+//        PostKeyword postKeyword = PostKeyword.builder()
+//                .post(p3)
+//                .keyword(k3)
+//                .build();
+//
+//        return postkeywordDao.save(postKeyword);
+
+
     }
 
 

@@ -2,6 +2,7 @@ package com.soldoc.tech.domain.postkeyword.model;
 
 import com.soldoc.tech.domain.keyword.model.Keyword;
 import com.soldoc.tech.domain.post.model.Post;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,10 @@ public class PostKeyword implements Serializable {
     @ManyToOne
     @JoinColumn(name = "KEYWORD_ID")
     Keyword keyword;
+
+    @Builder
+    public PostKeyword(Post post, Keyword keyword){
+        this.post = post;
+        this.keyword = keyword;
+    }
 }
