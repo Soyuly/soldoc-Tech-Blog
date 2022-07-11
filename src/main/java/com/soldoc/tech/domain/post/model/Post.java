@@ -71,13 +71,14 @@ public class Post extends BaseTime {
 
 
 
-    public void addLike(short likeCount){
-        this.likeCount = (short) (likeCount+1);
+    public void addLike(){
+        this.likeCount = (short) (this.likeCount +1);
     }
-    public void deleteLike(short likeCount){
-        this.likeCount = (short) (likeCount-1);
+    public void deleteLike(){
+        this.likeCount = (short) (this.likeCount -1);
     }
 
+    public short getLikeCount() { return this.likeCount; }
 
 
     public static Post createPost(String title, String body, String author){

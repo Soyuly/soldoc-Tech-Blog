@@ -52,10 +52,10 @@ public class PostService {
     }
 
     @Transactional
-    public Long update(PostUpdateRequestDto requestDto, Long id){
+    public boolean update(PostUpdateRequestDto requestDto, Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
         post.update(requestDto.getTitle(), requestDto.getBody());
-        return id;
+        return true;
     }
 
     @Transactional
@@ -63,6 +63,9 @@ public class PostService {
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
         return new PostResponseDto(post.getTitle());
     }
+
+
+
 
     @Transactional
     public Long delete(Long id){
@@ -72,20 +75,20 @@ public class PostService {
     }
 
     @Transactional
-    public boolean addLike(PostLikeReqDto postLikeReqDto, Long id){
+    public boolean addLike(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
-        post.addLike(postLikeReqDto.toEntity().getLikeCount());
+        post.addLike();
         return true;
     }
 
     @Transactional
-    public boolean deleteLike(PostLikeReqDto postLikeReqDto, Long id){
+    public boolean deleteLike(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
-        int curLikeCount = postLikeReqDto.toEntity().getLikeCount();
+        short curLikeCount = post.getLikeCount();
         if(curLikeCount <= 0){
             return false;
         }
-        post.deleteLike(postLikeReqDto.toEntity().getLikeCount());
+        post.deleteLike();
         return true;
     }
 

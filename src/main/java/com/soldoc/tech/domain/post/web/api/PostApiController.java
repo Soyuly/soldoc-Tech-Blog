@@ -39,7 +39,7 @@ public class PostApiController {
     }
 
     @PutMapping("/api/contents/{id}")
-    public Long update(@RequestBody PostUpdateRequestDto requestDto, @PathVariable Long id){
+    public boolean update(@RequestBody PostUpdateRequestDto requestDto, @PathVariable Long id){
         return postService.update(requestDto, id);
     }
 
@@ -53,14 +53,14 @@ public class PostApiController {
         return postService.delete(id);
     }
 
-    @PostMapping("/api/contents/{id}/addlike")
-    public boolean addLike(@RequestBody PostLikeReqDto postLikeReqDto, @PathVariable Long id){
-        return postService.addLike(postLikeReqDto, id);
+    @PostMapping("/api/contents/{id}/addLike")
+    public boolean addLike(@PathVariable Long id){
+        return postService.addLike(id);
     }
 
-    @PostMapping("/api/contents/{id}/deletelike")
-    public boolean deleteLike(@RequestBody PostLikeReqDto postLikeReqDto, @PathVariable Long id){
-        return postService.addLike(postLikeReqDto, id);
+    @PostMapping("/api/contents/{id}/deleteLike")
+    public boolean deleteLike(@PathVariable Long id){
+        return postService.deleteLike(id);
     }
 
     @PostMapping("/api/yy")

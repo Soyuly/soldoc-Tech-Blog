@@ -17,11 +17,11 @@ import java.util.List;
 public class KeywordService {
     private final KeywordDao keywordDao;
 
-
     @Transactional
-    public Long save(KeywordSaveRequestDto keywordSaveRequestDto){
+    public long save(KeywordSaveRequestDto keywordSaveRequestDto){
         return keywordDao.save(keywordSaveRequestDto.toEntity()).getId();
     }
+
 
     public List<Keyword> showKeyword(){
         return keywordDao.findAll();
