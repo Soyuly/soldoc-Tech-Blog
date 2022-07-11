@@ -4,6 +4,7 @@ import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,10 +36,15 @@ public class PostListResponseDto {
     }
 
     @Builder()
-    public PostListResponseDto(String title, String body, String author) {
+    public PostListResponseDto(String title, String body, String author, int viewCount, short likeCount, List<PostKeyword> postKeywords, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.title = title;
         this.body = body;
         this.author = author;
+        this.postKeywords = postKeywords;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
 }

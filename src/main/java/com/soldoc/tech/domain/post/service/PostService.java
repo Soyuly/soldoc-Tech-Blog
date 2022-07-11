@@ -63,11 +63,20 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto findById(Long id){
+    public PostListResponseDto findById(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        return new PostResponseDto(post.getTitle(), post.getPostKeywords());
-    }
+        post.addViewCount();
 
+        return PostListResponseDto.builder()
+                .title(post.getTitle())
+                .body(post.getBody())
+                .author(post.getAuthor())
+                .postKeywords(post.getPostKeywords())
+                .viewCount(post.getViewCount())
+                .likeCount(post.getLikeCount())
+                .modifiedDate(post.getModifiedDate())
+                .build();
+    }
 
 
 
@@ -79,21 +88,19 @@ public class PostService {
     }
 
     @Transactional
-    public boolean addLike(Long id){
+    public short addLike(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
-        post.addLike();
-        return true;
+        return post.addLike();
     }
 
     @Transactional
-    public boolean deleteLike(Long id){
+    public short deleteLike(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
         short curLikeCount = post.getLikeCount();
         if(curLikeCount <= 0){
-            return false;
+            return 0;
         }
-        post.deleteLike();
-        return true;
+        return post.deleteLike();
     }
 
     @Transactional
@@ -113,10 +120,13 @@ public class PostService {
                     .theme(themeEntity)
                     .name(keywordName)
                     .build().toEntity());
+            System.out.println(keywordName);
+            System.out.println(keyword.getName());
 
             PostKeyword postKeyword = postkeywordDao.save(PostKeywordSaveRequestDto.builder()
                     .post(post)
                     .keyword(keyword)
+                    .name(keyword.getName())
                     .build().toEntity());
         }
 
