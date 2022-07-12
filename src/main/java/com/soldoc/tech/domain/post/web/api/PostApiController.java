@@ -4,6 +4,7 @@ package com.soldoc.tech.domain.post.web.api;
 import com.soldoc.tech.common.PostVO;
 import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.*;
+import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,9 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class PostApiController {
-    //좋아요 값 그대로 보내 주게, 특정 게시글 방문 후 조회수 추가  //
-    //post할때 결과값을 다시 리턴해주는게 더 좋다 (클라이언트에서 그대로 상태변화를 주면 되니까)
-    //삭제(deleteAt 복원가능하게), 업데이트 예외처리(특정 데이터 안넣어준다면?)
+    //업데이트 예외처리(특정 데이터 안넣어준다면?)
     //findAll 페이지 처리
     //theme CRUD : 관리자 쪽에서 테마도 추가,삭제,수정 할 수 있도록 (5개)
 
@@ -28,7 +27,7 @@ public class PostApiController {
 
     @GetMapping("/api")
     public List<PostListResponseDto> findAllContent() {
-        return postService.findAllContent();
+        return postService.findAllContents();
     }
 
     @PostMapping("/api/contents")
@@ -51,13 +50,13 @@ public class PostApiController {
 
     //해당 게시물의 내용 수정
     @PutMapping("/api/contents/{id}")
-    public boolean update(@RequestBody PostUpdateRequestDto requestDto, @PathVariable Long id){
+    public PostApiResponse<Object> update(@RequestBody PostUpdateRequestDto requestDto, @PathVariable Long id){
         return postService.update(requestDto, id);
     }
 
     //해당 게시물 삭제
     @DeleteMapping("/api/contents/{id}")
-    public DeleteResponseDto delete(@PathVariable Long id){
+    public PostApiResponse<Object> delete(@PathVariable Long id){
         return postService.delete(id);
     }
 

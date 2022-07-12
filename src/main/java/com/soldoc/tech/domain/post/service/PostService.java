@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.post.service;
 
+import com.soldoc.tech.oauth.common.ApiResponse;
 import com.soldoc.tech.common.PostVO;
 import com.soldoc.tech.domain.keyword.dao.KeywordDao;
 import com.soldoc.tech.domain.keyword.model.Keyword;
@@ -14,6 +15,7 @@ import com.soldoc.tech.domain.theme.dao.ThemeDao;
 import com.soldoc.tech.domain.theme.model.Theme;
 import com.soldoc.tech.oauth.api.entity.user.User;
 import com.soldoc.tech.oauth.api.service.UserService;
+import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class PostService {
 
 
     @Transactional
-    public List<PostListResponseDto> findAllContent() {
+    public List<PostListResponseDto> findAllContents() {
         return postDao.findAllDesc().stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
@@ -60,10 +62,18 @@ public class PostService {
     }
 
     @Transactional
-    public boolean update(PostUpdateRequestDto requestDto, Long id){
+    public PostApiResponse<Object> update(PostUpdateRequestDto requestDto, Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        post.update(requestDto.getTitle(), requestDto.getBody());
-        return true;
+        boolean isUser = checkUser(post);
+
+        if(isUser){
+            post.update(requestDto.getTitle(), requestDto.getBody());
+            return PostApiResponse.success("post",post);
+        } else{
+            return PostApiResponse.notAuthor();
+        }
+
+
     }
 
     @Transactional
@@ -91,15 +101,18 @@ public class PostService {
 
 
     @Transactional
-    public DeleteResponseDto delete(Long id){
+    public PostApiResponse<Object> delete(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+        boolean isAuthor = checkUser(post);
 
-        if(Objects.equals(post.getDeleteStatus(), String.valueOf('Y'))){
-            return new DeleteResponseDto("존재하지 않는 게시물입니다.", "204");
-        }
-        post.deleteSetStatus();
-        post.setDeleteTime();;
-        return new DeleteResponseDto("성공적으로 삭제되었습니다.", "204");
+        if (isAuthor){
+
+              post.deleteSetStatus();
+              post.setDeleteTime();;
+            return PostApiResponse.success("postid",post.getId());
+        } 
+       return PostApiResponse.notAuthor();
+
     }
 
     @Transactional
@@ -160,6 +173,20 @@ public class PostService {
     public Post findByPostId(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
         return post;
+    }
+
+    public boolean checkUser(Post post){
+        // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User)
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal();
+
+        User user = userService.getUser(principal.getUsername());
+
+        return Objects.equals(user.getId(), post.getUser().getId());
+
     }
 
 
