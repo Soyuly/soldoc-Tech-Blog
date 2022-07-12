@@ -4,6 +4,7 @@ package com.soldoc.tech.domain.post.web.api;
 import com.soldoc.tech.common.PostVO;
 import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.*;
+import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class PostApiController {
 
     @GetMapping("/api")
     public List<PostListResponseDto> findAllContent() {
-        return postService.findAllContent();
+        return postService.findAllContents();
     }
 
     @PostMapping("/api/contents")
@@ -54,13 +55,13 @@ public class PostApiController {
 
     //해당 게시물의 내용 수정
     @PutMapping("/api/contents/{id}")
-    public boolean update(@RequestBody PostUpdateRequestDto requestDto, @PathVariable Long id){
+    public PostApiResponse<Object> update(@RequestBody PostUpdateRequestDto requestDto, @PathVariable Long id){
         return postService.update(requestDto, id);
     }
 
     //해당 게시물 삭제
     @DeleteMapping("/api/contents/{id}")
-    public Long delete(@PathVariable Long id){
+    public PostApiResponse<Object> delete(@PathVariable Long id){
         return postService.delete(id);
     }
 

@@ -56,7 +56,7 @@ public class Post extends BaseTime {
     // N : M 외래키
     // postKeywords : Post안에 여러개의 키워드가 있다는 것을 알려주는 변수
     @JsonManagedReference
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostKeyword> postKeywords = new ArrayList<>();
 
 
