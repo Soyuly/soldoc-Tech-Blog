@@ -17,11 +17,15 @@ import com.soldoc.tech.oauth.api.entity.user.User;
 import com.soldoc.tech.oauth.api.service.UserService;
 import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -43,6 +47,21 @@ public class PostService {
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
     }
+
+
+    public Page<PostListResponseDto> getAllPostPage(PageRequest pageRequest) {
+        Page<PostListResponseDto> p = postDao.findAll(pageRequest).map(PostListResponseDto::new);
+        return p;
+
+    }
+
+
+
+//    public Page<PostListResponseDto> findAllPost(Pageable pageable) {
+//        return postDao.findAllPost(pageable
+//                .map(PostListResponseDto::new);
+//    }
+
 
 
     @Transactional
