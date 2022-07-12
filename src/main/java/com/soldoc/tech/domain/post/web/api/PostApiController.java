@@ -2,12 +2,17 @@ package com.soldoc.tech.domain.post.web.api;
 
 
 import com.soldoc.tech.common.PostVO;
+import com.soldoc.tech.domain.post.dao.PostDao;
+import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.*;
 import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 //@RequiredArgsConstructor: final로 선언된 필드 자동 생성자 생성
@@ -24,6 +29,7 @@ public class PostApiController {
     //Entity를 직접 이용하지 않고, DTO(PostSaveRequestDto)를 만들어, 객체 전달
 
 
+
     private final PostService postService;
 
     @GetMapping("/posts")
@@ -31,10 +37,21 @@ public class PostApiController {
         return postService.findAllContents();
     }
 
+
     @PostMapping("/post")
     public PostApiResponse<Object>  create(@RequestBody PostVO postAllRequestDto){
        return postService.create(postAllRequestDto);
+}
+
+    @GetMapping("/v1")
+    public Page<PostListResponseDto> getAllPostPageWithQuery(@RequestParam("page") int page, @RequestParam("size") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return postService.getAllPostPage(pageRequest);
     }
+
+
+ 
+
 
     @GetMapping("/posts/search")
     public List<PostListResponseDto> search(@RequestParam(value="word") String word){
@@ -57,6 +74,11 @@ public class PostApiController {
     @DeleteMapping("/post/{id}")
     public PostApiResponse<Object> delete(@PathVariable Long id){
         return postService.delete(id);
+    }
+
+    @PostMapping("/v1/post/{id}/restore")
+    public PostApiResponse<Object> restore(@PathVariable Long id ){
+        return postService.restore(id);
     }
 
 

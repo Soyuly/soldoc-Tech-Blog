@@ -48,6 +48,14 @@ public class PostListResponseDto {
         this.modifiedDate = modifiedDate;
     }
 
+    public Post toEntity(){
+        return Post.builder()
+                .title(title)
+                .body(body)
+                .author(author)
+                .build();
+    }
+
 
 
 }
