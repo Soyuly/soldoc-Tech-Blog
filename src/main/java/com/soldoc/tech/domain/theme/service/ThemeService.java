@@ -1,5 +1,7 @@
 package com.soldoc.tech.domain.theme.service;
 
+import com.soldoc.tech.common.PostApiResponse;
+import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.theme.dao.ThemeDao;
 import com.soldoc.tech.domain.theme.dto.ThemeResponseDto;
 import com.soldoc.tech.domain.theme.dto.ThemeSaveRequestdDto;
@@ -16,13 +18,17 @@ public class ThemeService {
 
     // CREATE
     @Transactional
-    public Long save(ThemeSaveRequestdDto themeSaveRequestdDto){
-        return themeDao.save(themeSaveRequestdDto.toEntity()).getId();
+    public PostApiResponse<Object> save(ThemeSaveRequestdDto themeSaveRequestdDto){
+        Long themeId = themeDao.save(themeSaveRequestdDto.toEntity()).getId();
+        return PostApiResponse.success("themeId",themeId);
+
     }
+
+
 
     // 해당 주제에 맞는 Theme객체 찾기
     public Theme findByName (String name){
-        Theme ThemeEntity = themeDao.findByName(name);
+        Theme ThemeEntity = themeDao.findDistinctByName(name);
 
         return ThemeEntity;
     }
