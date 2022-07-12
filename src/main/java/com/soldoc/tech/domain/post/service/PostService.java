@@ -1,6 +1,5 @@
 package com.soldoc.tech.domain.post.service;
 
-import com.soldoc.tech.oauth.common.ApiResponse;
 import com.soldoc.tech.common.PostVO;
 import com.soldoc.tech.domain.keyword.dao.KeywordDao;
 import com.soldoc.tech.domain.keyword.model.Keyword;
@@ -37,6 +36,48 @@ public class PostService {
     private final ThemeDao themeDao;
 
 
+
+
+    @Transactional
+    public PostApiResponse<Object> create(PostVO postAllRequestDto){
+        // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User)
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal();
+
+        User user = userService.getUser(principal.getUsername());
+
+        //Post 객체 생성 (Dto -> Entity화)
+        Post post = postDao.save(PostSaveRequestDto.builder()
+                .title(postAllRequestDto.getTitle())
+                .body(postAllRequestDto.getBody())
+                .author(user.getUsername())
+                .user(user)
+                .build().toEntity());
+
+        Theme themeEntity = themeDao.findDistinctByName(postAllRequestDto.getTheme());
+        System.out.println(themeEntity.getName());
+        //Keyword 객체 생성  & PostKeyword 객체 생성
+        for(String keywordName: postAllRequestDto.getKeywords()){
+            Keyword keyword = keywordDao.save(KeywordSaveRequestDto.builder()
+                    .theme(themeEntity)
+                    .name(keywordName)
+                    .build().toEntity());
+
+            PostKeyword postKeyword = postkeywordDao.save(PostKeywordSaveRequestDto.builder()
+                    .post(post)
+                    .keyword(keyword)
+                    .name(keyword.getName())
+                    .build().toEntity());
+        }
+        //TODO - return HTTP.CREATE
+        return PostApiResponse.success("post",post);
+
+    }
+
+
     @Transactional
     public List<PostListResponseDto> findAllContents() {
         return postDao.findAllDesc().stream()
@@ -52,22 +93,24 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-
-
-    //Service: 트랜잭션과 도메인(:=레파지토리,다오..) 간 순서만 보장.
-    //Service단에서 Post DTO를 사용해서 / **다오에 객체를 전달.**
-    @Transactional
-    public Long save(PostSaveRequestDto requestDto){
-        return postDao.save(requestDto.toEntity()).getId();
-    }
-
     @Transactional
     public PostApiResponse<Object> update(PostUpdateRequestDto requestDto, Long id){
+
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
         boolean isUser = checkUser(post);
 
+        String title = post.getTitle();
+        String body = post.getBody();
         if(isUser){
-            post.update(requestDto.getTitle(), requestDto.getBody());
+
+            if(requestDto.getTitle() != null){
+                title = requestDto.getTitle();
+            }
+
+            if(requestDto.getBody() != null){
+                body = requestDto.getBody();
+            }
+            post.update(title,body);
             return PostApiResponse.success("post",post);
         } else{
             return PostApiResponse.notAuthor();
@@ -131,42 +174,7 @@ public class PostService {
         return post.deleteLike();
     }
 
-    @Transactional
-    public void create(PostVO postAllRequestDto){
-        // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User)
-                SecurityContextHolder
-                .getContext()
-                        .getAuthentication()
-                        .getPrincipal();
 
-        User user = userService.getUser(principal.getUsername());
-
-        //Post 객체 생성 (Dto -> Entity화)
-        Post post = postDao.save(PostSaveRequestDto.builder()
-                .title(postAllRequestDto.getTitle())
-                .body(postAllRequestDto.getBody())
-                .author(user.getUsername())
-                .user(user)
-                .build().toEntity());
-
-        Theme themeEntity = themeDao.findByName(postAllRequestDto.getTheme());
-        //Keyword 객체 생성  & PostKeyword 객체 생성
-        for(String keywordName: postAllRequestDto.getKeywords()){
-            Keyword keyword = keywordDao.save(KeywordSaveRequestDto.builder()
-                    .theme(themeEntity)
-                    .name(keywordName)
-                    .build().toEntity());
-
-            PostKeyword postKeyword = postkeywordDao.save(PostKeywordSaveRequestDto.builder()
-                    .post(post)
-                    .keyword(keyword)
-                    .name(keyword.getName())
-                    .build().toEntity());
-        }
-
-        //TODO - return HTTP.CREATE
-    }
 
 
     @Transactional

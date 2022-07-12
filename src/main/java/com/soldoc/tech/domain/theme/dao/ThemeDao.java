@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ThemeDao extends JpaRepository<Theme, Long> {
 
-    Theme findByName(String name);
+    Theme findDistinctByName(String name);
 
 }

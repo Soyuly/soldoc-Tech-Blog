@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.theme.api;
 
+import com.soldoc.tech.common.PostApiResponse;
 import com.soldoc.tech.common.PostVO;
 import com.soldoc.tech.domain.keyword.Service.KeywordService;
 import com.soldoc.tech.domain.keyword.model.Keyword;
@@ -28,8 +29,8 @@ public class ThemesController {
     private final PostKeywordService postKeywordService;
 
     // Theme Create
-    @PostMapping("/api/theme")
-    public Long save(@RequestBody ThemeSaveRequestdDto themeSaveRequestdDto){
+    @PostMapping("/api/v1/theme")
+    public PostApiResponse<Object> save(@RequestBody ThemeSaveRequestdDto themeSaveRequestdDto){
         return themeService.save(themeSaveRequestdDto);
     }
 

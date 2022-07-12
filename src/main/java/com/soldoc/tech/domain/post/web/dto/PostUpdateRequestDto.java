@@ -1,6 +1,7 @@
 package com.soldoc.tech.domain.post.web.dto;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

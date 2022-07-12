@@ -19,12 +19,11 @@ public class KeywordController {
     private final KeywordDao keywordDao;
 
     @GetMapping("/api/keywords/{id}")
-    public ArrayList<String> getKewordById(@PathVariable("id") Long themeId) {
+    public List<String> getKewordById(@PathVariable("id") Long themeId) {
         ArrayList<String> result = new ArrayList<String>();
-        System.out.println(themeId);
-        keywordDao.findAllByThemeId(themeId).forEach(keyword -> result.add(keyword.getName()));
 
-        return result;
+
+        return keywordDao.findDistinctByThemeId(themeId);
     }
 
 

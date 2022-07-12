@@ -13,6 +13,7 @@ import java.util.List;
 //@RequiredArgsConstructor: final로 선언된 필드 자동 생성자 생성
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api/v1")
 public class PostApiController {
     //업데이트 예외처리(특정 데이터 안넣어준다면?)
     //findAll 페이지 처리
@@ -25,50 +26,48 @@ public class PostApiController {
 
     private final PostService postService;
 
-    @GetMapping("/api")
+    @GetMapping("/posts")
     public List<PostListResponseDto> findAllContent() {
         return postService.findAllContents();
     }
 
-    @PostMapping("/api/contents")
-    public void create(@RequestBody PostVO postAllRequestDto){
-        postService.create(postAllRequestDto);
+    @PostMapping("/post")
+    public PostApiResponse<Object>  create(@RequestBody PostVO postAllRequestDto){
+       return postService.create(postAllRequestDto);
     }
 
-    @GetMapping("/api/contents/search")
+    @GetMapping("/posts/search")
     public List<PostListResponseDto> search(@RequestParam(value="word") String word){
         return postService.search(word);
     }
 
-
-
     //해당 게시물을 방문
-    @GetMapping("/api/contents/{id}")
+    @GetMapping("/post/{id}")
     public PostListResponseDto findById(@PathVariable Long id){
         return postService.findById(id);
     }
 
     //해당 게시물의 내용 수정
-    @PutMapping("/api/contents/{id}")
+    @PutMapping("/post/{id}")
     public PostApiResponse<Object> update(@RequestBody PostUpdateRequestDto requestDto, @PathVariable Long id){
         return postService.update(requestDto, id);
     }
 
     //해당 게시물 삭제
-    @DeleteMapping("/api/contents/{id}")
+    @DeleteMapping("/post/{id}")
     public PostApiResponse<Object> delete(@PathVariable Long id){
         return postService.delete(id);
     }
 
 
     //해당 게시물 좋아요 클릭
-    @PostMapping("/api/contents/{id}/addLike")
+    @PostMapping("/post/{id}/addlike")
     public short addLike(@PathVariable Long id){
         return postService.addLike(id);
     }
 
     //해당 게시물 좋아요 클릭하지 않음
-    @PostMapping("/api/contents/{id}/deleteLike")
+    @PostMapping("/post/{id}/deletelike")
     public short deleteLike(@PathVariable Long id){
         return postService.deleteLike(id);
     }
