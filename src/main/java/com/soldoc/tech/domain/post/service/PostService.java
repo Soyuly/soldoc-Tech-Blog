@@ -103,17 +103,31 @@ public class PostService {
     @Transactional
     public PostApiResponse<Object> delete(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+
         boolean isAuthor = checkUser(post);
 
-        if (isAuthor){
-
-              post.deleteSetStatus();
-              post.setDeleteTime();;
-            return PostApiResponse.success("postid",post.getId());
-        } 
-       return PostApiResponse.notAuthor();
-
+        if (!isAuthor){
+            return PostApiResponse.forbiddenDelete();
+        }
+        post.deleteSetStatus();
+        post.setDeleteTime();
+        return PostApiResponse.success("post_id",post.getId());
     }
+
+    @Transactional
+    public PostApiResponse<Object> restore(Long id){
+        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+
+        boolean isAuthor = checkUser(post);
+
+        if (!isAuthor){
+            return PostApiResponse.forbiddenDelete();
+        }
+        post.restoreStatus();
+        post.restoreDeleteTime();
+        return PostApiResponse.success("post_id", post.getId());
+    }
+
 
     @Transactional
     public short addLike(Long id){

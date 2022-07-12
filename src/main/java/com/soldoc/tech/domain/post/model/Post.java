@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -113,13 +114,17 @@ public class Post extends BaseTime {
     }
 
     public void setDeleteTime() {
-        this.deleteTime = getModifiedDate();
+        this.deleteTime = LocalDateTime.now();
+    }
+    public void restoreDeleteTime() {
+        this.deleteTime = null;
     }
 
     public void restoreStatus() {
         this.deleteStatus = String.valueOf('N');
     }
 
+//    public LocalDateTime getModifiedDate() { return this.getModifiedDate(); }
 
     public static Post createPost(String title, String body, String author, User user){
         return Post.builder()

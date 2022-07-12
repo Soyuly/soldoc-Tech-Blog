@@ -8,6 +8,7 @@ import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 //@RequiredArgsConstructor: final로 선언된 필드 자동 생성자 생성
@@ -58,6 +59,11 @@ public class PostApiController {
     @DeleteMapping("/api/contents/{id}")
     public PostApiResponse<Object> delete(@PathVariable Long id){
         return postService.delete(id);
+    }
+
+    @PostMapping("/v1/post/{id}/restore")
+    public PostApiResponse<Object> restore(@PathVariable Long id ){
+        return postService.restore(id);
     }
 
 
