@@ -1,7 +1,6 @@
 package com.soldoc.tech.oauth.api.controlller.auth;
 
 import com.soldoc.tech.oauth.api.entity.auth.AuthReqModel;
-import com.soldoc.tech.oauth.api.entity.user.User;
 import com.soldoc.tech.oauth.api.entity.user.UserRefreshToken;
 import com.soldoc.tech.oauth.api.repository.user.UserRefreshTokenRepository;
 import com.soldoc.tech.oauth.common.ApiResponse;
@@ -14,7 +13,6 @@ import com.soldoc.tech.oauth.utils.CookieUtil;
 import com.soldoc.tech.oauth.utils.HeaderUtil;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,10 +23,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 
 @RestController
 @RequestMapping("/api/auth")

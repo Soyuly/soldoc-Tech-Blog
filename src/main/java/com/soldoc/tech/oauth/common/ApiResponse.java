@@ -19,6 +19,7 @@ public class ApiResponse<T> {
     private final static String INVALID_ACCESS_TOKEN = "Invalid access token.";
     private final static String INVALID_REFRESH_TOKEN = "Invalid refresh token.";
     private final static String NOT_EXPIRED_TOKEN_YET = "Not expired token yet.";
+    private final static String DIFFRENT_AUTHOR = "작성자와 해당 user랑 일치하지 않습니다.";
 
     private final ApiResponseHeader header;
     private final Map<String, T> body;
@@ -44,5 +45,9 @@ public class ApiResponse<T> {
 
     public static <T> ApiResponse<T> notExpiredTokenYet() {
         return new ApiResponse(new ApiResponseHeader(FAILED, NOT_EXPIRED_TOKEN_YET), null);
+    }
+
+    public static <T> ApiResponse<T> notAuthor() {
+        return new ApiResponse(new ApiResponseHeader(FAILED, DIFFRENT_AUTHOR), null);
     }
 }

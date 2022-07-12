@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.post.service;
 
+import com.soldoc.tech.oauth.common.ApiResponse;
 import com.soldoc.tech.common.PostVO;
 import com.soldoc.tech.domain.keyword.dao.KeywordDao;
 import com.soldoc.tech.domain.keyword.model.Keyword;
@@ -14,6 +15,7 @@ import com.soldoc.tech.domain.theme.dao.ThemeDao;
 import com.soldoc.tech.domain.theme.model.Theme;
 import com.soldoc.tech.oauth.api.entity.user.User;
 import com.soldoc.tech.oauth.api.service.UserService;
+import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 //postsRepository결과의 값(Post의 Stream)을 map을 통해 PostListResponseDto로 변환->List로 반환하는 메소드
@@ -35,7 +38,7 @@ public class PostService {
 
 
     @Transactional
-    public List<PostListResponseDto> findAllContent() {
+    public List<PostListResponseDto> findAllContents() {
         return postDao.findAllDesc().stream()
                 .map(PostListResponseDto::new)
                 .collect(Collectors.toList());
@@ -59,10 +62,18 @@ public class PostService {
     }
 
     @Transactional
-    public boolean update(PostUpdateRequestDto requestDto, Long id){
+    public PostApiResponse<Object> update(PostUpdateRequestDto requestDto, Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        post.update(requestDto.getTitle(), requestDto.getBody());
-        return true;
+        boolean isUser = checkUser(post);
+
+        if(isUser){
+            post.update(requestDto.getTitle(), requestDto.getBody());
+            return PostApiResponse.success("post",post);
+        } else{
+            return PostApiResponse.notAuthor();
+        }
+
+
     }
 
     @Transactional
@@ -90,10 +101,18 @@ public class PostService {
 
 
     @Transactional
-    public Long delete(Long id){
+    public PostApiResponse<Object> delete(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        postDao.delete(post);
-        return id;
+        boolean isAuthor = checkUser(post);
+
+        if (isAuthor){
+
+            postDao.delete(post);
+            return PostApiResponse.success("postid",post.getId());
+        } else {
+            return PostApiResponse.notAuthor();
+        }
+
     }
 
     @Transactional
@@ -156,6 +175,20 @@ public class PostService {
     public Post findByPostId(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
         return post;
+    }
+
+    public boolean checkUser(Post post){
+        // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User)
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal();
+
+        User user = userService.getUser(principal.getUsername());
+
+        return Objects.equals(user.getId(), post.getUser().getId());
+
     }
 
 
