@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 //postsRepository결과의 값(Post의 Stream)을 map을 통해 PostListResponseDto로 변환->List로 반환하는 메소드
@@ -90,10 +91,15 @@ public class PostService {
 
 
     @Transactional
-    public Long delete(Long id){
+    public DeleteResponseDto delete(Long id){
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        postDao.delete(post);
-        return id;
+
+        if(Objects.equals(post.getDeleteStatus(), String.valueOf('Y'))){
+            return new DeleteResponseDto("존재하지 않는 게시물입니다.", "204");
+        }
+        post.deleteSetStatus();
+        post.setDeleteTime();;
+        return new DeleteResponseDto("성공적으로 삭제되었습니다.", "204");
     }
 
     @Transactional
@@ -138,8 +144,6 @@ public class PostService {
                     .theme(themeEntity)
                     .name(keywordName)
                     .build().toEntity());
-            System.out.println(keywordName);
-            System.out.println(keyword.getName());
 
             PostKeyword postKeyword = postkeywordDao.save(PostKeywordSaveRequestDto.builder()
                     .post(post)

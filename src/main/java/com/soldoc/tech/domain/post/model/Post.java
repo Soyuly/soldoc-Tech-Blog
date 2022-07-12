@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
+@DynamicInsert
 @Entity
 public class Post extends BaseTime {
 
@@ -46,6 +48,12 @@ public class Post extends BaseTime {
     //작성자
     @Column(nullable = false)
     private String author;
+
+    @Column(columnDefinition = "varchar(1) default 'N'")
+    private String deleteStatus;
+
+    @Column(name="DELETE_DATE", nullable = true)
+    private LocalDateTime deleteTime;
 
     //작성 계정
     @JsonBackReference
@@ -96,9 +104,20 @@ public class Post extends BaseTime {
 
     public short getLikeCount() { return this.likeCount; }
 
-    public int addViewCount() {
+    public void addViewCount() {
         this.viewCount = this.viewCount+1;
-        return this.viewCount;
+    }
+
+    public void deleteSetStatus() {
+        this.deleteStatus = String.valueOf('Y');
+    }
+
+    public void setDeleteTime() {
+        this.deleteTime = getModifiedDate();
+    }
+
+    public void restoreStatus() {
+        this.deleteStatus = String.valueOf('N');
     }
 
 

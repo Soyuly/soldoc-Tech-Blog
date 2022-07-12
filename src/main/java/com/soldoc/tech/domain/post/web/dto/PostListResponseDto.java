@@ -22,6 +22,7 @@ public class PostListResponseDto {
     private List<PostKeyword> postKeywords;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    
 
     //::new 사용을 위해
     public PostListResponseDto(Post entity){
@@ -46,5 +47,7 @@ public class PostListResponseDto {
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
+
+
 
 }

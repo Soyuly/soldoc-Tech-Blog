@@ -20,9 +20,6 @@ public class PostApiController {
     //theme CRUD : 관리자 쪽에서 테마도 추가,삭제,수정 할 수 있도록 (5개)
 
 
-
-
-
     //객체를 저장
     //Entity를 직접 이용하지 않고, DTO(PostSaveRequestDto)를 만들어, 객체 전달
 
@@ -60,7 +57,7 @@ public class PostApiController {
 
     //해당 게시물 삭제
     @DeleteMapping("/api/contents/{id}")
-    public Long delete(@PathVariable Long id){
+    public DeleteResponseDto delete(@PathVariable Long id){
         return postService.delete(id);
     }
 
