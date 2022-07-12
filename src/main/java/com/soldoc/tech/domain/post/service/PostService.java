@@ -107,11 +107,11 @@ public class PostService {
 
         if (isAuthor){
 
-            postDao.delete(post);
+              post.deleteSetStatus();
+              post.setDeleteTime();;
             return PostApiResponse.success("postid",post.getId());
-        } else {
-            return PostApiResponse.notAuthor();
-        }
+        } 
+       return PostApiResponse.notAuthor();
 
     }
 
@@ -157,8 +157,6 @@ public class PostService {
                     .theme(themeEntity)
                     .name(keywordName)
                     .build().toEntity());
-            System.out.println(keywordName);
-            System.out.println(keyword.getName());
 
             PostKeyword postKeyword = postkeywordDao.save(PostKeywordSaveRequestDto.builder()
                     .post(post)

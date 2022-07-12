@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class)  //변경되었을 때 자등으로 기록되도록
 public abstract class BaseTime {
 
     // 작성 날짜를 자동으로 생성해주는 어노테이션
@@ -24,6 +24,7 @@ public abstract class BaseTime {
 
     // 최근 수정 날짜를 자동으로 반영해준다.
     @LastModifiedDate
-    @Column(name="UPDATE_DATA", nullable = false)
+    @Column(name="UPDATE_DATE", nullable = false)
     private LocalDateTime modifiedDate;
+
 }
