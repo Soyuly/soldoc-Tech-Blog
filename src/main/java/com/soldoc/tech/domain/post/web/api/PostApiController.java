@@ -59,11 +59,12 @@ public class PostApiController {
         PageRequest pageRequest = PageRequest.of(0,4);
         return postService.search(word, pageRequest);
     }
-//        return postService.search(title, pageRequest);}
 
-
-
-
+    @GetMapping("/posts/keyword")
+    public PostApiResponse<Object> keyword(@RequestParam("word") String word){
+        PageRequest pageRequest = PageRequest.of(0,4);
+        return postService.keywordSearch(word, pageRequest);
+    }
 
 
 

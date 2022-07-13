@@ -40,6 +40,7 @@ public class PostService {
 
 
 
+
     @Transactional
     public PostApiResponse<Object> create(PostVO postAllRequestDto){
         // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
@@ -98,7 +99,7 @@ public class PostService {
             return PostApiResponse.requestSearch();
         }
 
-        if(checkPostByTitle(word, pageRequest).getHeader().getCode() == 200){
+        if(checkPostByTitle(word, pageRequest).getHeader().getCode()== 200){
             return PostApiResponse.success("find", postDao.findByTitleContaining(word, pageRequest));
         }else if(checkPostByBody(word, pageRequest).getHeader().getCode() == 200){
             return PostApiResponse.success("find", postDao.findByBodyContaining(word, pageRequest));
@@ -122,6 +123,12 @@ public class PostService {
             return PostApiResponse.searchFail();
         }
         return PostApiResponse.success("word", word);
+    }
+
+
+    @Transactional
+    public PostApiResponse<Object> keywordSearch(String word, PageRequest pageRequest) {
+        return PostApiResponse.success("find", postDao.findByPostKeywords(word, pageRequest).getContent());
     }
 
 
