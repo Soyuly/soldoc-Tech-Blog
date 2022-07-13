@@ -23,6 +23,9 @@ public class PostApiResponse<T> {
     private final static String NOT_FOUND_MESSAGE = "NOT FOUND";
     private final static String FORBIDDEN_MESSAGE = "해당 서버에 대한 액세스 권한이 없습니다.";
     private final static String FAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
+
+    private final static String REQUEST_SEARCH = "검색어를 입력 해주세요.";
+    private final static String FAILED_SEARCH = "해당하는 검색어를 찾을 수 없습니다.";
     private final static String HAS_NO_POST = "해당하는 게시글이 존재하지 않습니다.";
     private final static String INVALID_REFRESH_TOKEN = "Invalid refresh token.";
     private final static String NOT_EXPIRED_TOKEN_YET = "Not expired token yet.";
@@ -51,6 +54,14 @@ public class PostApiResponse<T> {
 
     public static <T> PostApiResponse<T> fail() {
         return new PostApiResponse(new PostApiResponseHeader(FAILED, FAILED_MESSAGE), null);
+    }
+
+    public static <T> PostApiResponse<T> searchFail() {
+        return new PostApiResponse(new PostApiResponseHeader(NOT_FOUND, FAILED_SEARCH), null);
+    }
+
+    public static <T> PostApiResponse<T> requestSearch() {
+        return new PostApiResponse(new PostApiResponseHeader(BAD_REQUEST, REQUEST_SEARCH), null);
     }
 
 

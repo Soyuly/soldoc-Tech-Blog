@@ -2,7 +2,6 @@ package com.soldoc.tech.domain.post.web.api;
 
 
 import com.soldoc.tech.common.PostVO;
-import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.*;
@@ -10,6 +9,7 @@ import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
@@ -53,11 +53,20 @@ public class PostApiController {
  
 
 
-//    @GetMapping("/posts/search")
-//    public Page<PostListResponseDto> search(@RequestParam("page") int page, @RequestParam(value="word") String word){
-//        PageRequest pageRequest = PageRequest.of(0,4);
-//        return postService.search(word, pageRequest);
-//    }
+
+    @GetMapping("/posts/search")
+    public PostApiResponse<Object> search(@RequestParam("word") String word){
+        PageRequest pageRequest = PageRequest.of(0,4);
+        return postService.search(word, pageRequest);
+    }
+//        return postService.search(title, pageRequest);}
+
+
+
+
+
+
+
 
     //해당 게시물을 방문
     @GetMapping("/post/{id}")

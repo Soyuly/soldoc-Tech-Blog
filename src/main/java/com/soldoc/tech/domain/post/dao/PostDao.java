@@ -16,11 +16,18 @@ public interface PostDao extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p WHERE p.deleteStatus <> 'Y' ORDER BY p.id DESC")
     List<Post> findAllDesc();
 
-    @Query("SELECT p FROM Post p WHERE p.title LIKE %:word% OR p.body LIKE %:word%")
-    Page<PostListResponseDto> findAllSearch(String word, PageRequest pageRequest);
+//    @Query("SELECT p FROM Post p WHERE p.title LIKE %:word% OR p.body LIKE %:word%")
+//    Page<PostListResponseDto> findAllSearch(String word, PageRequest pageRequest);
+
 
     List<Post> findAllByUserId(Long userId);
 
+    Page<PostListResponseDto> findByTitleContaining(String word, PageRequest pageRequest);
+    Page<PostListResponseDto> findByBodyContaining(String word, PageRequest pageRequest);
+
+
+
+//    Page<PostListResponseDto> findByBodyContaining(String word, PageRequest pageRequest);
 
 //    Page<PostListResponseDto> findAllPost(Pageable pageable);
 ////    Page<PostListResponseDto> findAllPost(PageRequest pageRequest);

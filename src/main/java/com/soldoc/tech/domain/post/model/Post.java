@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import com.soldoc.tech.domain.post.web.dto.PostListResponseDto;
 import com.soldoc.tech.domain.postkeyword.model.PostKeyword;
 import com.soldoc.tech.oauth.api.entity.user.User;
 import lombok.Builder;
@@ -136,4 +137,17 @@ public class Post extends BaseTime {
     }
 
 
+    public PostListResponseDto toDTO() {
+        return PostListResponseDto.builder()
+                .id(id)
+                .title(title)
+                .body(body)
+                .author(author)
+                .likeCount(likeCount)
+                .viewCount(viewCount)
+                .postKeywords(postKeywords)
+                .createdDate(getCreatedDate())
+                .modifiedDate(getModifiedDate())
+                .build();
+    }
 }
