@@ -32,10 +32,10 @@ public class PostApiController {
 
     private final PostService postService;
 
-    @GetMapping("/posts")
-    public List<PostListResponseDto> findAllContent() {
-        return postService.findAllContents();
-    }
+//    @GetMapping("/posts")
+//    public List<PostListResponseDto> findAllContent() {
+//        return postService.findAllContents();
+//    }
 
 
     @PostMapping("/post")
@@ -43,9 +43,9 @@ public class PostApiController {
        return postService.create(postAllRequestDto);
 }
 
-    @GetMapping("/v1")
-    public Page<PostListResponseDto> getAllPostPageWithQuery(@RequestParam("page") int page, @RequestParam("size") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+    @GetMapping()
+    public Page<PostListResponseDto> getAllPostPageWithQuery(@RequestParam("page") int page) {
+        PageRequest pageRequest = PageRequest.of(page, 4);
         return postService.getAllPostPage(pageRequest);
     }
 
@@ -53,10 +53,11 @@ public class PostApiController {
  
 
 
-    @GetMapping("/posts/search")
-    public List<PostListResponseDto> search(@RequestParam(value="word") String word){
-        return postService.search(word);
-    }
+//    @GetMapping("/posts/search")
+//    public Page<PostListResponseDto> search(@RequestParam("page") int page, @RequestParam(value="word") String word){
+//        PageRequest pageRequest = PageRequest.of(0,4);
+//        return postService.search(word, pageRequest);
+//    }
 
     //해당 게시물을 방문
     @GetMapping("/post/{id}")

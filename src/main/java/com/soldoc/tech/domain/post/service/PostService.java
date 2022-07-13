@@ -18,6 +18,7 @@ import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,35 +83,24 @@ public class PostService {
     }
 
 
-    @Transactional
-    public List<PostListResponseDto> findAllContents() {
-        return postDao.findAllDesc().stream()
-                .map(PostListResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-
     public Page<PostListResponseDto> getAllPostPage(PageRequest pageRequest) {
-        Page<PostListResponseDto> p = postDao.findAll(pageRequest).map(PostListResponseDto::new);
-        return p;
+        return postDao.findAll(pageRequest).map(PostListResponseDto::new);
 
+//        int start_page = p.getTotalPages() > 10 ? (p.getPageable().getPageNumber()/10)*10+1 : 1;
+//        System.out.println("첫 시작 페이지  :  " + start_page);
+//        System.out.println("페이지 내 게시물 갯수  : " + p.getNumberOfElements());
+//        System.out.println("제공되는 총 페이지 수  : " + p.getTotalPages());
+//        System.out.println("총 데이터의 수  : " + p.getTotalElements());
     }
 
 
 
-//    public Page<PostListResponseDto> findAllPost(Pageable pageable) {
-//        return postDao.findAllPost(pageable
+//    @Transactional
+//    public Page<PostListResponseDto> search(@RequestParam(value="word") String word, PageRequest pageRequest) {
+//        Pageable pageable = getAllPostPage(pageRequest).getPageable();
+//        return postDao.findAllSearch(word, pageable).stream()
 //                .map(PostListResponseDto::new);
 //    }
-
-
-
-    @Transactional
-    public List<PostListResponseDto> search(@RequestParam(value="word") String word) {
-        return postDao.findAllSearch(word).stream()
-                .map(PostListResponseDto::new)
-                .collect(Collectors.toList());
-    }
 
     @Transactional
     public PostApiResponse<Object> update(PostUpdateRequestDto requestDto, Long id){
