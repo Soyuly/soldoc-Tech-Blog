@@ -14,6 +14,7 @@ public class PostApiResponse<T> {
     private final static int SUCCESS = 200;
     private final static int BAD_REQUEST = 400;
     private final static int UNAUTHORIZED = 401;
+    private final static int DIFFRENT_AUTHOR = 402;
     private final static int FORBIDDEN = 403;
     private final static int NOT_FOUND = 404;
 
@@ -26,7 +27,7 @@ public class PostApiResponse<T> {
     private final static String HAS_NO_POST = "해당하는 게시글이 존재하지 않습니다.";
     private final static String INVALID_REFRESH_TOKEN = "Invalid refresh token.";
     private final static String NOT_EXPIRED_TOKEN_YET = "Not expired token yet.";
-    private final static String DIFFRENT_AUTHOR = "작성자와 해당 user랑 일치하지 않습니다.";
+    private final static String DIFFRENT_AUTHOR_MESSAGE = "작성자와 해당 user랑 일치하지 않습니다.";
 
 
 
@@ -64,7 +65,7 @@ public class PostApiResponse<T> {
     }
 
     public static <T> PostApiResponse<T> notAuthor() {
-        return new PostApiResponse(new PostApiResponseHeader(UNAUTHORIZED, DIFFRENT_AUTHOR), null);
+        return new PostApiResponse(new PostApiResponseHeader(UNAUTHORIZED, DIFFRENT_AUTHOR_MESSAGE), null);
     }
 
 }
