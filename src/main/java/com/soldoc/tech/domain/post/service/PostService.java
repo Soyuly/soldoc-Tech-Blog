@@ -218,15 +218,23 @@ public class PostService {
 
     public boolean checkUser(Post post){
         // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User)
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication()
-                        .getPrincipal();
+        try {
+            org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User)
+                    SecurityContextHolder
+                            .getContext()
+                            .getAuthentication()
+                            .getPrincipal();
 
-        User user = userService.getUser(principal.getUsername());
+            User user = userService.getUser(principal.getUsername());
 
-        return Objects.equals(user.getId(), post.getUser().getId());
+            return Objects.equals(user.getId(), post.getUser().getId());
+        } catch (Exception e){
+            return false;
+        }
+
+
+
+
 
     }
 

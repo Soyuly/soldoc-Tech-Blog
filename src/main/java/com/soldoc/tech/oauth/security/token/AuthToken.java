@@ -58,15 +58,17 @@ public class AuthToken {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (SecurityException e) {
-            log.info("Invalid JWT signature.");
+            log.info("유효하지 않은 JWT 토큰 검증방식입니다.");
         } catch (MalformedJwtException e) {
-            log.info("Invalid JWT token.");
+            log.info("유효하지 않은 JWT 토큰입니다.");
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token.");
+            log.info("만료된 JWT 토큰입니다. /refresh를 통해 갱신해주세요!");
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token.");
+            log.info("지원하지 않는 JWT토큰 형식입니다.");
         } catch (IllegalArgumentException e) {
-            log.info("JWT token compact of handler are invalid.");
+            log.info("JWT 토큰의 압축 방식이 잘못 되었습니다.");
+        } catch (io.jsonwebtoken.security.SignatureException e){
+            log.info("검증되지 않은 토큰 입니다.");
         }
         return null;
     }
