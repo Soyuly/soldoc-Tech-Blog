@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -79,7 +80,7 @@ public class PostService {
 
     @Transactional
     public Page<PostListResponseDto> getAllPostPage(PageRequest pageRequest) {
-        return postDao.findAll(pageRequest).map(PostListResponseDto::new);
+        return postDao.findAll(pageRequest).map(Post::toDTO);
 
 //        System.out.println("첫 시작 페이지  :  " + start_page);
 //        System.out.println("페이지 내 게시물 갯수  : " + p.getNumberOfElements());
@@ -130,7 +131,7 @@ public class PostService {
         if(!postDao.keywordExists(word, pageRequest)){
             return PostApiResponse.searchFail();
         }
-        return PostApiResponse.success("find", postDao.findByPostKeywords(word, pageRequest));
+        return PostApiResponse.success("find", postDao.findByPostKeywords(word, pageRequest).map(Post::toDTO));
     }
 
 
@@ -276,6 +277,11 @@ public class PostService {
 
 
 
+    }
+
+    public PostApiResponse<Object> postRecommend() {
+        short max_like_count = 4;
+        return PostApiResponse.success("recommend_post", postDao.findTop3ByLikeCountGreaterThanOrderByLikeCountDesc(max_like_count));
     }
 
 

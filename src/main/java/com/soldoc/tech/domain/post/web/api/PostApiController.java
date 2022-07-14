@@ -90,8 +90,8 @@ public class PostApiController {
     }
 
 
-    //해당 게시물 좋아요 클릭
-    //유저가 좋아요를 눌렀을 경우 +1 이미 눌렀을 경우 -1
+    // 해당 게시물 좋아요 클릭
+    // TODO 프론트 쪽 : 유저가 좋아요를 눌렀을 경우 +1 이미 눌렀을 경우 -1
     @PostMapping("/post/{id}/addlike")
     public PostApiResponse<Object> addLike(@PathVariable Long id){
         return postService.addLike(id);
@@ -103,5 +103,10 @@ public class PostApiController {
         return postService.deleteLike(id);
     }
 
+
+    @GetMapping("/post/recommend")
+    public PostApiResponse<Object> postRecommend(){
+        return postService.postRecommend();
+    }
 
 }
