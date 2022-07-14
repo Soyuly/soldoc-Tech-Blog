@@ -11,6 +11,8 @@ import java.util.List;
 
 @Getter
 public class PostListResponseDto {
+
+    private Long id;
     private String title;
     private String body;
     private String author;
@@ -26,6 +28,7 @@ public class PostListResponseDto {
 
     //::new 사용을 위해
     public PostListResponseDto(Post entity){
+        this.id = entity.getId();
         this.title = entity.getTitle();
         this.postKeywords = entity.getPostKeywords();
         this.body = entity.getBody();
@@ -37,7 +40,8 @@ public class PostListResponseDto {
     }
 
     @Builder()
-    public PostListResponseDto(String title, String body, String author, int viewCount, short likeCount, List<PostKeyword> postKeywords, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public PostListResponseDto(Long id, String title, String body, String author, int viewCount, short likeCount, List<PostKeyword> postKeywords, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+        this.id = id;
         this.title = title;
         this.body = body;
         this.author = author;

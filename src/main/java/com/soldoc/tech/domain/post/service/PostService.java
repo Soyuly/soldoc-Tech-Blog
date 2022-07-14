@@ -20,14 +20,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
-import java.awt.print.Pageable;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 //postsRepository결과의 값(Post의 Stream)을 map을 통해 PostListResponseDto로 변환->List로 반환하는 메소드
 @RequiredArgsConstructor
@@ -38,6 +34,7 @@ public class PostService {
     private final KeywordDao keywordDao;
     private final UserService userService;
     private final ThemeDao themeDao;
+
 
 
 
@@ -76,46 +73,75 @@ public class PostService {
                     .name(keyword.getName())
                     .build().toEntity());
         }
-        //TODO - return HTTP.CREATE
-        return PostApiResponse.success("post",post);
+        return PostApiResponse.created("created_post",post.toDTO());
 
     }
-
 
     @Transactional
-    public List<PostListResponseDto> findAllContents() {
-        return postDao.findAllDesc().stream()
-                .map(PostListResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-
     public Page<PostListResponseDto> getAllPostPage(PageRequest pageRequest) {
-        Page<PostListResponseDto> p = postDao.findAll(pageRequest).map(PostListResponseDto::new);
-        return p;
+        return postDao.findAll(pageRequest).map(PostListResponseDto::new);
 
+//        System.out.println("첫 시작 페이지  :  " + start_page);
+//        System.out.println("페이지 내 게시물 갯수  : " + p.getNumberOfElements());
+//        System.out.println("제공되는 총 페이지 수  : " + p.getTotalPages());
+//        System.out.println("총 데이터의 수  : " + p.getTotalElements());
     }
 
-
-
-//    public Page<PostListResponseDto> findAllPost(Pageable pageable) {
-//        return postDao.findAllPost(pageable
-//                .map(PostListResponseDto::new);
-//    }
 
 
 
     @Transactional
-    public List<PostListResponseDto> search(@RequestParam(value="word") String word) {
-        return postDao.findAllSearch(word).stream()
-                .map(PostListResponseDto::new)
-                .collect(Collectors.toList());
+    public PostApiResponse<Object> search(String word, PageRequest pageRequest) {
+        if(word.isEmpty()){
+            return PostApiResponse.requestSearch();
+        }
+
+        if(checkPostByTitle(word, pageRequest).getHeader().getCode()== 200){
+            return PostApiResponse.success("find", postDao.findByTitleContaining(word, pageRequest));
+        }else if(checkPostByBody(word, pageRequest).getHeader().getCode() == 200){
+            return PostApiResponse.success("find", postDao.findByBodyContaining(word, pageRequest));
+        }
+
+        return PostApiResponse.searchFail();
     }
+
+    @Transactional
+    public PostApiResponse<Object> checkPostByTitle(String word, PageRequest pageRequest) {
+        if(postDao.findByTitleContaining(word, pageRequest).getContent().isEmpty()){
+            return PostApiResponse.searchFail();
+        }
+        return PostApiResponse.success("word", word);
+    }
+
+    @Transactional
+    public PostApiResponse<Object> checkPostByBody(String word, PageRequest pageRequest) {
+        if(postDao.findByBodyContaining(word, pageRequest).getContent().isEmpty()){
+            return PostApiResponse.searchFail();
+        }
+        return PostApiResponse.success("word", word);
+    }
+
+
+    @Transactional
+    public PostApiResponse<Object> keywordSearch(String word, PageRequest pageRequest) {
+        if(word.isEmpty()){
+            return PostApiResponse.badRequest();
+        }
+        if(!postDao.keywordExists(word, pageRequest)){
+            return PostApiResponse.searchFail();
+        }
+        return PostApiResponse.success("find", postDao.findByPostKeywords(word, pageRequest));
+    }
+
+
+
 
     @Transactional
     public PostApiResponse<Object> update(PostUpdateRequestDto requestDto, Long id){
-
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+        Post post = postDao.findById(id).get();
         boolean isUser = checkUser(post);
 
         String title = post.getTitle();
@@ -138,33 +164,26 @@ public class PostService {
 
     }
 
-    @Transactional
-    public PostListResponseDto findById(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        post.addViewCount();
 
-        return PostListResponseDto.builder()
-                .title(post.getTitle())
-                .body(post.getBody())
-                .author(post.getAuthor())
-                .postKeywords(post.getPostKeywords())
-                .viewCount(post.getViewCount())
-                .likeCount(post.getLikeCount())
-                .modifiedDate(post.getModifiedDate())
-                .build();
-    }
 
 //    @Transactional
-//    public PostResponseDto findByUserId(Long userId){
-//        List<Post> post = postDao.findAllByUserId(userId);
-//        return new PostResponseDto(post.getTitle(), post.getPostKeywords());
+//    public PostApiResponse<Object> findById(Long id){
+//        Optional<PostListResponseDto> post = postDao.findById(id).map(Post::toDTO);
+//        return PostApiResponse.success("find", post);
 //    }
 
-
+    @Transactional
+    public boolean checkPostExists(Long id) {
+        return postDao.existsById(id);
+    }
 
     @Transactional
     public PostApiResponse<Object> delete(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+
+        Post post = postDao.findById(id).get();
 
         boolean isAuthor = checkUser(post);
 
@@ -178,7 +197,11 @@ public class PostService {
 
     @Transactional
     public PostApiResponse<Object> restore(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+
+        Post post = postDao.findById(id).get();
 
         boolean isAuthor = checkUser(post);
 
@@ -191,29 +214,46 @@ public class PostService {
     }
 
 
+
+
     @Transactional
-    public short addLike(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
-        return post.addLike();
+    public PostApiResponse<Object> addLike(Long id){
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+        Post post = postDao.findById(id).get();
+        return PostApiResponse.success("like_value", post.addLike() );
     }
 
     @Transactional
-    public short deleteLike(Long id){
+    public PostApiResponse<Object> deleteLike(Long id){
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
         short curLikeCount = post.getLikeCount();
         if(curLikeCount <= 0){
-            return 0;
+            return PostApiResponse.success("like_value", 0);
         }
-        return post.deleteLike();
+        return PostApiResponse.success("like_value", post.deleteLike());
     }
 
 
 
 
+
     @Transactional
-    public Post findByPostId(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        return post;
+    public PostApiResponse<Object> findByPostId(Long id){
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+
+        Post post = postDao.findById(id).get();
+        if(Objects.equals(post.getDeleteStatus(), "Y")){
+            return PostApiResponse.hasNoPost();
+        }
+        return PostApiResponse.success("find", post.toDTO());
     }
 
     public boolean checkUser(Post post){

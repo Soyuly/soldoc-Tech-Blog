@@ -2,7 +2,6 @@ package com.soldoc.tech.domain.post.web.api;
 
 
 import com.soldoc.tech.common.PostVO;
-import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.*;
@@ -10,10 +9,12 @@ import com.soldoc.tech.common.PostApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 //@RequiredArgsConstructor: final로 선언된 필드 자동 생성자 생성
 @RequiredArgsConstructor
@@ -32,10 +33,10 @@ public class PostApiController {
 
     private final PostService postService;
 
-    @GetMapping("/posts")
-    public List<PostListResponseDto> findAllContent() {
-        return postService.findAllContents();
-    }
+//    @GetMapping("/posts")
+//    public List<PostListResponseDto> findAllContent() {
+//        return postService.findAllContents();
+//    }
 
 
     @PostMapping("/post")
@@ -43,25 +44,32 @@ public class PostApiController {
        return postService.create(postAllRequestDto);
 }
 
-    @GetMapping("/v1")
-    public Page<PostListResponseDto> getAllPostPageWithQuery(@RequestParam("page") int page, @RequestParam("size") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+    @GetMapping()
+    public Page<PostListResponseDto> getAllPostPageWithQuery(@RequestParam("page") int page) {
+        PageRequest pageRequest = PageRequest.of(page, 4);
         return postService.getAllPostPage(pageRequest);
     }
 
 
- 
-
-
     @GetMapping("/posts/search")
-    public List<PostListResponseDto> search(@RequestParam(value="word") String word){
-        return postService.search(word);
+    public PostApiResponse<Object> search(@RequestParam("word") String word){
+        PageRequest pageRequest = PageRequest.of(0,4);
+        return postService.search(word, pageRequest);
     }
+
+    @GetMapping("/posts/keyword")
+    public PostApiResponse<Object> keyword(@RequestParam("word") String word){
+        PageRequest pageRequest = PageRequest.of(0,4);
+        return postService.keywordSearch(word, pageRequest);
+    }
+
+
+
 
     //해당 게시물을 방문
     @GetMapping("/post/{id}")
-    public PostListResponseDto findById(@PathVariable Long id){
-        return postService.findById(id);
+    public PostApiResponse<Object> findById(@PathVariable Long id){
+        return postService.findByPostId(id);
     }
 
     //해당 게시물의 내용 수정
@@ -83,14 +91,15 @@ public class PostApiController {
 
 
     //해당 게시물 좋아요 클릭
+    //유저가 좋아요를 눌렀을 경우 +1 이미 눌렀을 경우 -1
     @PostMapping("/post/{id}/addlike")
-    public short addLike(@PathVariable Long id){
+    public PostApiResponse<Object> addLike(@PathVariable Long id){
         return postService.addLike(id);
     }
 
     //해당 게시물 좋아요 클릭하지 않음
     @PostMapping("/post/{id}/deletelike")
-    public short deleteLike(@PathVariable Long id){
+    public PostApiResponse<Object> deleteLike(@PathVariable Long id){
         return postService.deleteLike(id);
     }
 
