@@ -272,7 +272,7 @@ public class PostService {
     }
 
     public PostApiResponse<Object> postRecommend() {
-        short max_like_count = 5;
+        short max_like_count = 4;
         return PostApiResponse.success("recommend_post", postDao.findTop3ByLikeCountGreaterThanOrderByLikeCountDesc(max_like_count));
     }
 
