@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
 import java.util.List;
+import java.util.Optional;
 
 //@RequiredArgsConstructor: final로 선언된 필드 자동 생성자 생성
 @RequiredArgsConstructor
@@ -50,10 +51,6 @@ public class PostApiController {
     }
 
 
- 
-
-
-
     @GetMapping("/posts/search")
     public PostApiResponse<Object> search(@RequestParam("word") String word){
         PageRequest pageRequest = PageRequest.of(0,4);
@@ -71,8 +68,8 @@ public class PostApiController {
 
     //해당 게시물을 방문
     @GetMapping("/post/{id}")
-    public PostListResponseDto findById(@PathVariable Long id){
-        return postService.findById(id);
+    public PostApiResponse<Object> findById(@PathVariable Long id){
+        return postService.findByPostId(id);
     }
 
     //해당 게시물의 내용 수정
@@ -94,14 +91,15 @@ public class PostApiController {
 
 
     //해당 게시물 좋아요 클릭
+    //유저가 좋아요를 눌렀을 경우 +1 이미 눌렀을 경우 -1
     @PostMapping("/post/{id}/addlike")
-    public short addLike(@PathVariable Long id){
+    public PostApiResponse<Object> addLike(@PathVariable Long id){
         return postService.addLike(id);
     }
 
     //해당 게시물 좋아요 클릭하지 않음
     @PostMapping("/post/{id}/deletelike")
-    public short deleteLike(@PathVariable Long id){
+    public PostApiResponse<Object> deleteLike(@PathVariable Long id){
         return postService.deleteLike(id);
     }
 

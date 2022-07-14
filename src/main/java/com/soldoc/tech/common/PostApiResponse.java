@@ -12,6 +12,8 @@ import java.util.Map;
 public class PostApiResponse<T> {
 
     private final static int SUCCESS = 200;
+
+    private final static int CREATED = 201;
     private final static int BAD_REQUEST = 400;
     private final static int UNAUTHORIZED = 401;
     private final static int FORBIDDEN = 403;
@@ -20,7 +22,10 @@ public class PostApiResponse<T> {
     private final static int FAILED = 500;
     private final static String SUCCESS_MESSAGE = "SUCCESS";
 
+    private final static String CREATED_MESSAGE = "성공적으로 생성되었습니다.";
+
     private final static String NOT_FOUND_MESSAGE = "NOT FOUND";
+    private final static String BAD_REQUEST_MESSAGE = "잘못된 접근입니다.";
     private final static String FORBIDDEN_MESSAGE = "해당 서버에 대한 액세스 권한이 없습니다.";
     private final static String FAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
 
@@ -44,12 +49,23 @@ public class PostApiResponse<T> {
         return new PostApiResponse(new PostApiResponseHeader(SUCCESS, SUCCESS_MESSAGE), map);
     }
 
+    public static <T> PostApiResponse<T> created(String name, T body){
+        Map<String, T> map = new HashMap<>();
+        map.put(name, body);
+
+        return new PostApiResponse(new PostApiResponseHeader(CREATED, CREATED_MESSAGE), map);
+    }
+
     public static <T> PostApiResponse<T> forbiddenDelete(){
         return new PostApiResponse(new PostApiResponseHeader(FORBIDDEN, FORBIDDEN_MESSAGE), null);
     }
 
+    public static <T> PostApiResponse<T> badRequest() {
+        return new PostApiResponse(new PostApiResponseHeader(BAD_REQUEST, BAD_REQUEST_MESSAGE), null);
+    }
+
     public static <T> PostApiResponse<T> hasNoPost() {
-        return new PostApiResponse(new PostApiResponseHeader(FAILED, HAS_NO_POST), null);
+        return new PostApiResponse(new PostApiResponseHeader(NOT_FOUND, HAS_NO_POST), null);
     }
 
     public static <T> PostApiResponse<T> fail() {

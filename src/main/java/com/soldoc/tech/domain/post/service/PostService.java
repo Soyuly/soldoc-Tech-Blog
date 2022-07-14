@@ -22,10 +22,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.Array;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 //postsRepository결과의 값(Post의 Stream)을 map을 통해 PostListResponseDto로 변환->List로 반환하는 메소드
 @RequiredArgsConstructor
@@ -75,8 +73,7 @@ public class PostService {
                     .name(keyword.getName())
                     .build().toEntity());
         }
-        //TODO - return HTTP.CREATE
-        return PostApiResponse.success("post",post);
+        return PostApiResponse.created("created_post",post.toDTO());
 
     }
 
@@ -118,7 +115,6 @@ public class PostService {
 
     @Transactional
     public PostApiResponse<Object> checkPostByBody(String word, PageRequest pageRequest) {
-//        Page<PostListResponseDto> pages = postDao.findAll(pageRequest).map(PostListResponseDto::new);
         if(postDao.findByBodyContaining(word, pageRequest).getContent().isEmpty()){
             return PostApiResponse.searchFail();
         }
@@ -128,7 +124,13 @@ public class PostService {
 
     @Transactional
     public PostApiResponse<Object> keywordSearch(String word, PageRequest pageRequest) {
-        return PostApiResponse.success("find", postDao.findByPostKeywords(word, pageRequest).getContent());
+        if(word.isEmpty()){
+            return PostApiResponse.badRequest();
+        }
+        if(!postDao.keywordExists(word, pageRequest)){
+            return PostApiResponse.searchFail();
+        }
+        return PostApiResponse.success("find", postDao.findByPostKeywords(word, pageRequest));
     }
 
 
@@ -136,8 +138,10 @@ public class PostService {
 
     @Transactional
     public PostApiResponse<Object> update(PostUpdateRequestDto requestDto, Long id){
-
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+        Post post = postDao.findById(id).get();
         boolean isUser = checkUser(post);
 
         String title = post.getTitle();
@@ -160,33 +164,26 @@ public class PostService {
 
     }
 
-    @Transactional
-    public PostListResponseDto findById(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        post.addViewCount();
 
-        return PostListResponseDto.builder()
-                .title(post.getTitle())
-                .body(post.getBody())
-                .author(post.getAuthor())
-                .postKeywords(post.getPostKeywords())
-                .viewCount(post.getViewCount())
-                .likeCount(post.getLikeCount())
-                .modifiedDate(post.getModifiedDate())
-                .build();
-    }
 
 //    @Transactional
-//    public PostResponseDto findByUserId(Long userId){
-//        List<Post> post = postDao.findAllByUserId(userId);
-//        return new PostResponseDto(post.getTitle(), post.getPostKeywords());
+//    public PostApiResponse<Object> findById(Long id){
+//        Optional<PostListResponseDto> post = postDao.findById(id).map(Post::toDTO);
+//        return PostApiResponse.success("find", post);
 //    }
 
-
+    @Transactional
+    public boolean checkPostExists(Long id) {
+        return postDao.existsById(id);
+    }
 
     @Transactional
     public PostApiResponse<Object> delete(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+
+        Post post = postDao.findById(id).get();
 
         boolean isAuthor = checkUser(post);
 
@@ -200,7 +197,11 @@ public class PostService {
 
     @Transactional
     public PostApiResponse<Object> restore(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+
+        Post post = postDao.findById(id).get();
 
         boolean isAuthor = checkUser(post);
 
@@ -213,29 +214,46 @@ public class PostService {
     }
 
 
+
+
     @Transactional
-    public short addLike(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
-        return post.addLike();
+    public PostApiResponse<Object> addLike(Long id){
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+        Post post = postDao.findById(id).get();
+        return PostApiResponse.success("like_value", post.addLike() );
     }
 
     @Transactional
-    public short deleteLike(Long id){
+    public PostApiResponse<Object> deleteLike(Long id){
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+
         Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 게시물입니다."));
         short curLikeCount = post.getLikeCount();
         if(curLikeCount <= 0){
-            return 0;
+            return PostApiResponse.success("like_value", 0);
         }
-        return post.deleteLike();
+        return PostApiResponse.success("like_value", post.deleteLike());
     }
 
 
 
 
+
     @Transactional
-    public Post findByPostId(Long id){
-        Post post = postDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
-        return post;
+    public PostApiResponse<Object> findByPostId(Long id){
+        if(!checkPostExists(id)){
+            return PostApiResponse.hasNoPost();
+        }
+
+        Post post = postDao.findById(id).get();
+        if(Objects.equals(post.getDeleteStatus(), "Y")){
+            return PostApiResponse.hasNoPost();
+        }
+        return PostApiResponse.success("find", post.toDTO());
     }
 
     public boolean checkUser(Post post){
