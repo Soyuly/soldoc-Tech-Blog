@@ -15,9 +15,7 @@ import com.soldoc.tech.domain.theme.dto.ThemeSaveRequestdDto;
 import com.soldoc.tech.domain.theme.model.Theme;
 import com.soldoc.tech.domain.theme.service.ThemeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +30,11 @@ public class ThemesController {
     @PostMapping("/api/v1/theme")
     public PostApiResponse<Object> save(@RequestBody ThemeSaveRequestdDto themeSaveRequestdDto){
         return themeService.save(themeSaveRequestdDto);
+    }
+
+    @DeleteMapping("/api/v1/theme/{id}")
+    public PostApiResponse<Object> delete(@PathVariable Long id){
+        return themeService.delete(id);
     }
 
 

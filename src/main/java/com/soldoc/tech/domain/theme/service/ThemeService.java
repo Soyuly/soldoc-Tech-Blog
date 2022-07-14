@@ -20,10 +20,16 @@ public class ThemeService {
     @Transactional
     public PostApiResponse<Object> save(ThemeSaveRequestdDto themeSaveRequestdDto){
         Long themeId = themeDao.save(themeSaveRequestdDto.toEntity()).getId();
+        return PostApiResponse.success("theme_name",themeSaveRequestdDto.getName());
+
+    }
+    @Transactional
+    public PostApiResponse<Object> delete(Long themeId){
+       Theme theme  = themeDao.findById(themeId).orElseThrow(()-> new IllegalArgumentException("해당 테마가 없습니다"));
+       themeDao.delete(theme);
         return PostApiResponse.success("themeId",themeId);
 
     }
-
 
 
     // 해당 주제에 맞는 Theme객체 찾기
