@@ -11,7 +11,7 @@ public class PostVO {
     public String title;
     private String body;
 
-    private List<String> keywords;
+    private List<Long> keywords;
     private String theme;
 
 }

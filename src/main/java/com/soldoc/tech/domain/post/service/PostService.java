@@ -36,10 +36,6 @@ public class PostService {
     private final UserService userService;
     private final ThemeDao themeDao;
 
-
-
-
-
     @Transactional
     public PostApiResponse<Object> create(PostVO postAllRequestDto){
         // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
@@ -62,11 +58,8 @@ public class PostService {
         Theme themeEntity = themeDao.findDistinctByName(postAllRequestDto.getTheme());
         System.out.println(themeEntity.getName());
         //Keyword 객체 생성  & PostKeyword 객체 생성
-        for(String keywordName: postAllRequestDto.getKeywords()){
-            Keyword keyword = keywordDao.save(KeywordSaveRequestDto.builder()
-                    .theme(themeEntity)
-                    .name(keywordName)
-                    .build().toEntity());
+        for(Long keywordId: postAllRequestDto.getKeywords()){
+            Keyword keyword = keywordDao.findById(keywordId).orElseThrow(()-> new IllegalArgumentException("존재하지 않는 키워드입니다."));
 
             PostKeyword postKeyword = postkeywordDao.save(PostKeywordSaveRequestDto.builder()
                     .post(post)
@@ -116,6 +109,7 @@ public class PostService {
         if(!postDao.existsByPostKeywordsName(word, pageRequest)){
             return PostApiResponse.searchFail();
         }
+
         return PostApiResponse.success("find", postDao.findAllByPostKeywordsName(word, pageRequest).map(Post::toDTO));
     }
 
@@ -143,11 +137,9 @@ public class PostService {
             }
             post.update(title,body);
             return PostApiResponse.success("post",post);
-        } else{
-            return PostApiResponse.notAuthor();
         }
 
-
+        return PostApiResponse.notAuthor();
     }
 
     @Transactional
@@ -166,8 +158,9 @@ public class PostService {
         boolean isAuthor = checkUser(post);
 
         if (!isAuthor){
-            return PostApiResponse.forbiddenDelete();
+            return PostApiResponse.notAuthor();
         }
+
         post.deleteSetStatus();
         post.setDeleteTime();
         return PostApiResponse.success("post_id",post.getId());
@@ -184,7 +177,7 @@ public class PostService {
         boolean isAuthor = checkUser(post);
 
         if (!isAuthor){
-            return PostApiResponse.forbiddenDelete();
+            return PostApiResponse.notAuthor();
         }
         post.restoreStatus();
         post.restoreDeleteTime();
@@ -218,9 +211,6 @@ public class PostService {
     }
 
 
-
-
-
     @Transactional
     public PostApiResponse<Object> findByPostId(Long id){
         if(!checkPostExists(id)){
@@ -249,11 +239,6 @@ public class PostService {
         } catch (Exception e){
             return false;
         }
-
-
-
-
-
     }
 
     public PostApiResponse<Object> postRecommend() {

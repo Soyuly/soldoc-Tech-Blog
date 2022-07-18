@@ -14,4 +14,5 @@ public interface KeywordDao extends JpaRepository<Keyword, Long> {
 
     @Query("select distinct k.name from Keyword k where k.theme.id = :themeId")
     List<String> findDistinctByThemeId(Long themeId);
+
 }
