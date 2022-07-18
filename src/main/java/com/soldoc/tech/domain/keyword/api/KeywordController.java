@@ -1,13 +1,14 @@
 package com.soldoc.tech.domain.keyword.api;
 
+import com.soldoc.tech.common.PostApiResponse;
+import com.soldoc.tech.domain.keyword.Service.KeywordService;
 import com.soldoc.tech.domain.keyword.dao.KeywordDao;
 import com.soldoc.tech.domain.keyword.model.Keyword;
+import com.soldoc.tech.domain.keyword.web.dto.KeywordVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 public class KeywordController {
 
     private final KeywordDao keywordDao;
-
+    private final KeywordService keywordService;
     @GetMapping("/api/keywords/{id}")
     public List<String> getKewordById(@PathVariable("id") Long themeId) {
         ArrayList<String> result = new ArrayList<String>();
@@ -26,6 +27,10 @@ public class KeywordController {
         return keywordDao.findDistinctByThemeId(themeId);
     }
 
+    @PostMapping("/api/v1/keyword")
+    public PostApiResponse<Object> save(@RequestBody KeywordVO keywordVO){
+        return keywordService.save(keywordVO);
+    }
 
 
 }

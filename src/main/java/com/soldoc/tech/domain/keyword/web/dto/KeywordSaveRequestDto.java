@@ -3,7 +3,11 @@ package com.soldoc.tech.domain.keyword.web.dto;
 import com.soldoc.tech.domain.keyword.model.Keyword;
 import com.soldoc.tech.domain.theme.model.Theme;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class KeywordSaveRequestDto {
     private String name;
     private Theme theme;

@@ -1,5 +1,6 @@
 package com.soldoc.tech.domain.theme.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.soldoc.tech.domain.keyword.model.Keyword;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class Theme {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @JsonBackReference
    @OneToMany(mappedBy = "theme")
    private List<Keyword> keywords = new ArrayList<>();
 

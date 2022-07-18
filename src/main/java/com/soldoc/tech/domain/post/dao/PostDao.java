@@ -28,8 +28,8 @@ public interface PostDao extends JpaRepository<Post, Long> {
     Page<PostKeyword> findByKeywordContaining(String word, PageRequest pageRequest);
 
     //해당하는 pk.keyword.name의 name을 가진 post내용을 불러오도록
-    @Query(value="SELECT p FROM PostKeyword pk INNER JOIN Post p on p.id = pk.post.id WHERE pk.keyword.name = ?1")
-    Page<Post> findByPostKeywords(String word, PageRequest pageRequest);
+//    @Query(value="SELECT p FROM PostKeyword pk INNER JOIN Post p on p.id = pk.post.id WHERE pk.keyword.name = ?1")
+    Page<Post> findAllByPostKeywordsName(String word, PageRequest pageRequest);
 
     @Query(value="SELECT count (p) > 0 FROM PostKeyword pk INNER JOIN Post p on p.id = pk.post.id WHERE pk.name = :word")
     boolean keywordExists(@Param("word") String word, PageRequest pageRequest);
