@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class TokenResponseDto {
-    private final accessToken;
+    private String accessToken;
 }
