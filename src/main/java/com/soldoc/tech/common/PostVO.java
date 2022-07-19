@@ -10,7 +10,6 @@ import java.util.List;
 public class PostVO {
     public String title;
     private String body;
-
     private List<Long> keywords;
     private String theme;
 

@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +32,14 @@ public class ThemeService {
         return PostApiResponse.success("themeId",themeId);
 
     }
+
+    @Transactional
+        public List<ThemeResponseDto> findAllDesc() {
+            return themeDao.findAllDesc().stream()
+                    .map(ThemeResponseDto::new)
+                    .collect(Collectors.toList());
+        }
+
 
 
     // 해당 주제에 맞는 Theme객체 찾기
