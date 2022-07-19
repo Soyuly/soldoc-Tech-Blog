@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -33,6 +34,12 @@ public class KeywordService {
     public Keyword findById(Long id){
         Keyword keyword = keywordDao.findById(id).orElseThrow(()-> new IllegalArgumentException("해당 게시물이 존재하지 않습니다 id = " + id));
         return keyword;
+    }
+
+    public List<KeywordResponseDto> findByThemeId(Long id){
+        return keywordDao.findByThemeId(id).stream()
+                .map(KeywordResponseDto::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional

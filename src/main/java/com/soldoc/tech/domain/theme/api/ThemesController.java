@@ -11,11 +11,14 @@ import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.PostSaveRequestDto;
 import com.soldoc.tech.domain.postkeyword.dto.PostKeywordSaveRequestDto;
 import com.soldoc.tech.domain.postkeyword.service.PostKeywordService;
+import com.soldoc.tech.domain.theme.dto.ThemeResponseDto;
 import com.soldoc.tech.domain.theme.dto.ThemeSaveRequestdDto;
 import com.soldoc.tech.domain.theme.model.Theme;
 import com.soldoc.tech.domain.theme.service.ThemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +29,10 @@ public class ThemesController {
     private final KeywordService keywordService;
     private final PostKeywordService postKeywordService;
 
+    @GetMapping("/api/v1/theme")
+    public List<ThemeResponseDto> findAllDesc(){
+        return themeService.findAllDesc();
+    }
     // Theme Create
     @PostMapping("/api/v1/theme")
     public PostApiResponse<Object> save(@RequestBody ThemeSaveRequestdDto themeSaveRequestdDto){

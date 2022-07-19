@@ -13,6 +13,7 @@ public class PostSaveRequestDto {
     private String title;
     private String body;
     private String author;
+    private String imageUrl;
     private User user;
 
 
@@ -22,11 +23,13 @@ public class PostSaveRequestDto {
             String title,
             String body,
             String author,
+            String imageUrl,
             User user
             ){
         this.title = title;
         this.body = body;
         this.author = author;
+        this.imageUrl = imageUrl;
         this.user = user;
     }
 
@@ -36,6 +39,7 @@ public class PostSaveRequestDto {
         return Post.builder()
                 .title(title)
                 .body(body)
+
                 .author(author)
                 .user(user)
                 .build();

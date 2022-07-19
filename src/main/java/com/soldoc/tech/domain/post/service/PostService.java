@@ -51,6 +51,7 @@ public class PostService {
                 .title(postAllRequestDto.getTitle())
                 .body(postAllRequestDto.getBody())
                 .author(user.getUsername())
+
                 .user(user)
                 .build().toEntity());
 

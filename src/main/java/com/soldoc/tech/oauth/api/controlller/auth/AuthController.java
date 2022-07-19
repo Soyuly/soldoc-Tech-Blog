@@ -1,5 +1,7 @@
 package com.soldoc.tech.oauth.api.controlller.auth;
 
+import com.soldoc.tech.common.PostApiResponse;
+import com.soldoc.tech.oauth.api.dto.TokenResponseDto;
 import com.soldoc.tech.oauth.api.entity.auth.AuthReqModel;
 import com.soldoc.tech.oauth.api.entity.user.UserRefreshToken;
 import com.soldoc.tech.oauth.api.repository.user.UserRefreshTokenRepository;
@@ -12,6 +14,7 @@ import com.soldoc.tech.oauth.security.token.AuthTokenProvider;
 import com.soldoc.tech.oauth.utils.CookieUtil;
 import com.soldoc.tech.oauth.utils.HeaderUtil;
 import io.jsonwebtoken.Claims;
+import jdk.nashorn.internal.parser.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,13 +42,17 @@ public class AuthController {
     private final static String REFRESH_TOKEN = "refresh_token";
 
     @GetMapping("/token")
-    public String test(HttpServletRequest request, HttpServletResponse response){
+    public PostApiResponse<TokenResponseDto> test(HttpServletRequest request, HttpServletResponse response){
 
         String token = HeaderUtil.getAccessToken(request);
         AuthToken authToken = tokenProvider.convertAuthToken(token);
         Claims claims = authToken.getTokenClaims();
         UserRefreshToken userRefreshToken = userRefreshTokenRepository.findByUserId(claims.getSubject());
-        return "{\"access_token \" : " + token + ",\n\"refresh_token \" : " + userRefreshToken.getRefreshToken() + "}";
+        TokenResponseDto tokenResponseDto = new TokenResponseDto();
+        tokenResponseDto.setAccessToken(token);
+        tokenResponseDto.setRefreshToken(userRefreshToken.getRefreshToken());
+        System.out.println(tokenResponseDto.getRefreshToken());
+        return PostApiResponse.success("token", tokenResponseDto);
     }
     @PostMapping("/login")
     // httpservlet Reuest를 사용하면 값을 받아올 수 있다.
