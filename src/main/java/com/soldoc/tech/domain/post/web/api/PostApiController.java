@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Pageable;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,16 +22,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1")
 public class PostApiController {
-    //업데이트 예외처리(특정 데이터 안넣어준다면?)
-    //findAll 페이지 처리
-    //theme CRUD : 관리자 쪽에서 테마도 추가,삭제,수정 할 수 있도록 (5개)
-
-
-    //객체를 저장
-    //Entity를 직접 이용하지 않고, DTO(PostSaveRequestDto)를 만들어, 객체 전달
-
-
-
     private final PostService postService;
 
 //    @GetMapping("/posts")
@@ -107,6 +98,11 @@ public class PostApiController {
     @GetMapping("/post/recommend")
     public PostApiResponse<Object> postRecommend(){
         return postService.postRecommend();
+    }
+
+    @RequestMapping(value="/home", method=RequestMethod.GET)
+    public int checkEmail() throws SQLException, Exception {
+        return 5;
     }
 
 }

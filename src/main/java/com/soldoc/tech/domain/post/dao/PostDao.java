@@ -21,7 +21,7 @@ public interface PostDao extends JpaRepository<Post, Long> {
 
     Page<PostListResponseDto> findByTitleContainingOrBodyContaining(String title_word, String body_word, PageRequest pageRequest);
     boolean existsByTitleContainingOrBodyContaining(String title_word, String body_word, PageRequest pageRequest);
-    Page<Post> findAllByPostKeywordsName(String word, PageRequest pageRequest);
+
 
     boolean existsByPostKeywordsName(String word, PageRequest pageRequest);
 
