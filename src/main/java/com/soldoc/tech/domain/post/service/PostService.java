@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -80,7 +81,8 @@ public class PostService {
 
     @Transactional
     public Page<PostListResponseDto> getAllPostPage(PageRequest pageRequest) {
-        return postDao.findAll(pageRequest).map(PostListResponseDto::new);
+        String delete_status = "Y";
+        return postDao.findAllByDeleteStatusNot(delete_status, pageRequest).map(Post::toDTO);
 
 //        System.out.println("첫 시작 페이지  :  " + start_page);
 //        System.out.println("페이지 내 게시물 갯수  : " + p.getNumberOfElements());
@@ -97,41 +99,26 @@ public class PostService {
             return PostApiResponse.requestSearch();
         }
 
-        if(checkPostByTitle(word, pageRequest).getHeader().getCode()== 200){
-            return PostApiResponse.success("find", postDao.findByTitleContaining(word, pageRequest));
-        }else if(checkPostByBody(word, pageRequest).getHeader().getCode() == 200){
-            return PostApiResponse.success("find", postDao.findByBodyContaining(word, pageRequest));
-        }
+        Page<PostListResponseDto> pages = postDao.findByTitleContainingOrBodyContaining(word, word, pageRequest);
 
-        return PostApiResponse.searchFail();
-    }
-
-    @Transactional
-    public PostApiResponse<Object> checkPostByTitle(String word, PageRequest pageRequest) {
-        if(postDao.findByTitleContaining(word, pageRequest).getContent().isEmpty()){
+        System.out.println(postDao.existsByTitleContainingOrBodyContaining(word, word, pageRequest));
+        if(!postDao.existsByTitleContainingOrBodyContaining(word, word, pageRequest)){
             return PostApiResponse.searchFail();
         }
-        return PostApiResponse.success("word", word);
-    }
 
-    @Transactional
-    public PostApiResponse<Object> checkPostByBody(String word, PageRequest pageRequest) {
-        if(postDao.findByBodyContaining(word, pageRequest).getContent().isEmpty()){
-            return PostApiResponse.searchFail();
-        }
-        return PostApiResponse.success("word", word);
+        return PostApiResponse.success("find", pages);
     }
-
 
     @Transactional
     public PostApiResponse<Object> keywordSearch(String word, PageRequest pageRequest) {
         if(word.isEmpty()){
             return PostApiResponse.badRequest();
         }
-        if(!postDao.keywordExists(word, pageRequest)){
+        if(!postDao.existsByPostKeywordsName(word, pageRequest)){
             return PostApiResponse.searchFail();
         }
-        return PostApiResponse.success("find", postDao.findAllByPostKeywordsName(word, pageRequest));
+
+        return PostApiResponse.success("find", postDao.findAllByPostKeywordsName(word, pageRequest).map(Post::toDTO));
     }
 
 
@@ -161,14 +148,6 @@ public class PostService {
 
         return PostApiResponse.notAuthor();
     }
-
-
-
-//    @Transactional
-//    public PostApiResponse<Object> findById(Long id){
-//        Optional<PostListResponseDto> post = postDao.findById(id).map(Post::toDTO);
-//        return PostApiResponse.success("find", post);
-//    }
 
     @Transactional
     public boolean checkPostExists(Long id) {
@@ -267,6 +246,11 @@ public class PostService {
         } catch (Exception e){
             return false;
         }
+    }
+
+    public PostApiResponse<Object> postRecommend() {
+        short max_like_count = 4;
+        return PostApiResponse.success("recommend_post", postDao.findTop3ByLikeCountGreaterThanOrderByLikeCountDesc(max_like_count));
     }
 
 
