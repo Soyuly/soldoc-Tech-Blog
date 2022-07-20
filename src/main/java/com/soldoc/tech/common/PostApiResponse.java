@@ -28,7 +28,7 @@ public class PostApiResponse<T> {
     private final static String BAD_REQUEST_MESSAGE = "잘못된 접근입니다.";
     private final static String FORBIDDEN_MESSAGE = "해당 서버에 대한 액세스 권한이 없습니다.";
     private final static String FAILED_MESSAGE = "서버에서 오류가 발생하였습니다.";
-
+    private final static String NOT_LOGIN = "로그인이 필요한 서비스입니다.";
     private final static String REQUEST_SEARCH = "검색어를 입력 해주세요.";
     private final static String FAILED_SEARCH = "해당하는 검색어를 찾을 수 없습니다.";
     private final static String HAS_NO_POST = "해당하는 게시글이 존재하지 않습니다.";
@@ -68,6 +68,10 @@ public class PostApiResponse<T> {
 
     public static <T> PostApiResponse<T> fail() {
         return new PostApiResponse(new PostApiResponseHeader(FAILED, FAILED_MESSAGE), null);
+    }
+
+    public static <T> PostApiResponse<T> notLogin() {
+        return new PostApiResponse(new PostApiResponseHeader(UNAUTHORIZED, NOT_LOGIN), null);
     }
 
     public static <T> PostApiResponse<T> searchFail() {

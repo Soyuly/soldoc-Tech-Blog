@@ -33,5 +33,4 @@ public interface PostDao extends JpaRepository<Post, Long> {
     Page<Post> findAllByPostKeywordsName(String word, PageRequest pageRequest);
 
 
-
 }
