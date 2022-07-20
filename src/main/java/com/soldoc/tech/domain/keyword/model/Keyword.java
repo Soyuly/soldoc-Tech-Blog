@@ -33,7 +33,7 @@ public class Keyword {
     private Theme theme;
 
     // Post에 대한 외래키(N : M)
-    @OneToMany(mappedBy = "keyword")
+    @OneToMany(mappedBy = "keyword", cascade = CascadeType.REMOVE)
     private List<PostKeyword> postKeywords = new ArrayList<>();
 
     @Builder

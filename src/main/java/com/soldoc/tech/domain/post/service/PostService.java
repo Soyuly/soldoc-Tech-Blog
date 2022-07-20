@@ -39,11 +39,18 @@ public class PostService {
     @Transactional
     public PostApiResponse<Object> create(PostVO postAllRequestDto){
         // 현재 접속한 계정 헤더의 Authroization을 읽어온다.
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User)
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication()
-                        .getPrincipal();
+        org.springframework.security.core.userdetails.User principal;
+        try {
+           principal = (org.springframework.security.core.userdetails.User)
+                    SecurityContextHolder
+                            .getContext()
+                            .getAuthentication()
+                            .getPrincipal();
+        } catch(ClassCastException e){
+            return PostApiResponse.notLogin();
+        }
+
+
 
         User user = userService.getUser(principal.getUsername());
 
@@ -113,7 +120,6 @@ public class PostService {
 
         return PostApiResponse.success("find", postDao.findAllByPostKeywordsName(word, pageRequest).map(Post::toDTO));
     }
-
 
 
 

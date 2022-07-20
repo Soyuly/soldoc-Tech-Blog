@@ -9,8 +9,9 @@ import com.soldoc.tech.domain.post.dao.PostDao;
 import com.soldoc.tech.domain.post.model.Post;
 import com.soldoc.tech.domain.post.service.PostService;
 import com.soldoc.tech.domain.post.web.dto.PostSaveRequestDto;
+import com.soldoc.tech.domain.postkeyword.Service.PostKeywordService;
 import com.soldoc.tech.domain.postkeyword.dto.PostKeywordSaveRequestDto;
-import com.soldoc.tech.domain.postkeyword.service.PostKeywordService;
+import com.soldoc.tech.domain.theme.dto.ThemeKeywordsResponseDto;
 import com.soldoc.tech.domain.theme.dto.ThemeResponseDto;
 import com.soldoc.tech.domain.theme.dto.ThemeSaveRequestdDto;
 import com.soldoc.tech.domain.theme.model.Theme;
@@ -42,6 +43,11 @@ public class ThemesController {
     @DeleteMapping("/api/v1/theme/{id}")
     public PostApiResponse<Object> delete(@PathVariable Long id){
         return themeService.delete(id);
+    }
+
+    @GetMapping("/api/v1/themekeywords")
+    public List<ThemeKeywordsResponseDto> getThemeKeywords(){
+        return themeService.findByThemeAndKeywords();
     }
 
 
