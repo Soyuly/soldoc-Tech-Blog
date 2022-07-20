@@ -33,5 +33,8 @@ public class KeywordController {
         return keywordService.save(keywordVO);
     }
 
-
+    @DeleteMapping("/api/keyword/{id}")
+    public PostApiResponse<Object> deleteKeyword(@PathVariable Long id){
+        return  keywordService.delete(id);
+    }
 }
