@@ -44,8 +44,6 @@ public class KeywordService {
 
     @Transactional
     public PostApiResponse<Object> save(KeywordVO keywordVO){
-
-
         Theme themeEntity = themeDao.findDistinctByName(keywordVO.getTheme());
 
         Keyword keyword = keywordDao.save(KeywordSaveRequestDto.builder()
@@ -56,5 +54,12 @@ public class KeywordService {
         return PostApiResponse.created("keyword",keyword);
     }
 
+    @Transactional
+    public PostApiResponse<Object> delete(Long id) {
+        Keyword keyword = keywordDao.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
+        keywordDao.delete(keyword);
+
+        return PostApiResponse.success("id",id);
+    }
 
 }
