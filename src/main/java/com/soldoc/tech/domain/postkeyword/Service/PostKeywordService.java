@@ -31,6 +31,7 @@ public class PostKeywordService {
         return postkeywordDao.save(postKeywordSaveRequestDto.toEntity()).getId();
     }
 
+
     @Transactional
     public  List<Post> getRelatedPost(Long id ){
         List<PostKeyword> postKeywordList =  postkeywordDao.findAllByPostId(id);
@@ -57,7 +58,6 @@ public class PostKeywordService {
     @Transactional
     public Theme getKeywordsByThemeId(Long id) {
         try {
-
             Theme theme = postkeywordDao.findKeywordByPostId(id).getKeyword().getTheme();
             return theme;
         } catch (NullPointerException error) {

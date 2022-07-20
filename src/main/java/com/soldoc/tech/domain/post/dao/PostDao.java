@@ -17,6 +17,8 @@ public interface PostDao extends JpaRepository<Post, Long> {
 
     Page<Post> findAllByDeleteStatusNot(String delete_status, PageRequest pageRequest);
 
+    List<Post> findAllByPostKeywords_Name(String word);
+
     List<Post> findAllByUserId(Long userId);
 
     Page<PostListResponseDto> findByTitleContainingOrBodyContaining(String title_word, String body_word, PageRequest pageRequest);
