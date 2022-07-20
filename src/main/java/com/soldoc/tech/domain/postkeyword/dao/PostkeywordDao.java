@@ -20,5 +20,5 @@ public interface PostkeywordDao extends JpaRepository<PostKeyword, Long> {
 
     List<PostKeyword> findAllByPostId(long id);
 
-    PostKeyword findKeywordByPostId(long id);
+    PostKeyword findFirstKeywordsByPostId(long id);
 }
