@@ -50,14 +50,13 @@ public class PostKeywordService {
 
 
         }
-    return posts;
+        return posts;
 
 
     }
     @Transactional
     public Theme getKeywordsByThemeId(Long id) {
         try {
-
             Theme theme = postkeywordDao.findFirstKeywordsByPostId(id).getKeyword().getTheme();
             return theme;
         } catch (NullPointerException error) {

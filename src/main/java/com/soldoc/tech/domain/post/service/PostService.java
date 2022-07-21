@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
@@ -135,11 +136,11 @@ public class PostService {
         String body = post.getBody();
         if(isUser){
 
-            if(requestDto.getTitle() != null){
+            if(!requestDto.getTitle().equals("")){
                 title = requestDto.getTitle();
             }
 
-            if(requestDto.getBody() != null){
+            if(!requestDto.getBody().equals("")){
                 body = requestDto.getBody();
             }
             post.update(title,body);
