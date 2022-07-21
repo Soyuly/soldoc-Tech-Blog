@@ -17,21 +17,16 @@ public interface PostDao extends JpaRepository<Post, Long> {
 
     Page<Post> findAllByDeleteStatusNot(String delete_status, PageRequest pageRequest);
 
-    List<Post> findAllByPostKeywords_Name(String word);
-
     List<Post> findAllByUserId(Long userId);
 
     Page<PostListResponseDto> findByTitleContainingOrBodyContaining(String title_word, String body_word, PageRequest pageRequest);
     boolean existsByTitleContainingOrBodyContaining(String title_word, String body_word, PageRequest pageRequest);
-
+    Page<Post> findAllByPostKeywordsName(String word, PageRequest pageRequest);
 
     boolean existsByPostKeywordsName(String word, PageRequest pageRequest);
 
     List<Post> findTop3ByLikeCountGreaterThanOrderByLikeCountDesc(short likeCount);
 
-
-    //해당하는 pk.keyword.name의 name을 가진 post내용을 불러오도록
-//    @Query(value="SELECT p FROM PostKeyword pk INNER JOIN Post p on p.id = pk.post.id WHERE pk.keyword.name = ?1")
     List<Post> findAllByPostKeywords_Name(String word);
 
 

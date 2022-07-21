@@ -136,11 +136,11 @@ public class PostService {
         String body = post.getBody();
         if(isUser){
 
-            if(requestDto.getTitle() != null){
+            if(!requestDto.getTitle().equals("")){
                 title = requestDto.getTitle();
             }
 
-            if(requestDto.getBody() != null){
+            if(!requestDto.getBody().equals("")){
                 body = requestDto.getBody();
             }
             post.update(title,body);

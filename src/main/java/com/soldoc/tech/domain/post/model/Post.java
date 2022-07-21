@@ -2,7 +2,6 @@ package com.soldoc.tech.domain.post.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import com.soldoc.tech.domain.post.web.dto.PostListResponseDto;
@@ -11,16 +10,12 @@ import com.soldoc.tech.oauth.api.entity.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -150,4 +145,5 @@ public class Post extends BaseTime {
                 .modifiedDate(getModifiedDate())
                 .build();
     }
+
 }
