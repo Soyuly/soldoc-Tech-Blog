@@ -15,7 +15,7 @@ public interface PostDao extends JpaRepository<Post, Long> {
 
 
 
-    Page<Post> findAllByDeleteStatusNot(String delete_status, PageRequest pageRequest);
+    Page<Post> findAllByDeleteStatusNotOrderByIdDesc(String delete_status, PageRequest pageRequest);
 
     List<Post> findAllByUserId(Long userId);
 

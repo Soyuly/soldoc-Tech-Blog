@@ -83,7 +83,7 @@ public class PostService {
     @Transactional
     public Page<PostListResponseDto> getAllPostPage(PageRequest pageRequest) {
         String delete_status = "Y";
-        return postDao.findAllByDeleteStatusNot(delete_status, pageRequest).map(Post::toDTO);
+        return postDao.findAllByDeleteStatusNotOrderByIdDesc(delete_status, pageRequest).map(Post::toDTO);
 
 //        System.out.println("첫 시작 페이지  :  " + start_page);
 //        System.out.println("페이지 내 게시물 갯수  : " + p.getNumberOfElements());
